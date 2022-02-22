@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.MatchesMapper">
+  <resultMap id="BaseResultMap" type="com.example.entity.Matches">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="event_id" jdbcType="BIGINT" property="eventId" />
+    <result column="time" jdbcType="DATE" property="time" />
+    <result column="home_team_id" jdbcType="BIGINT" property="homeTeamId" />
+    <result column="home_team" jdbcType="VARCHAR" property="homeTeam" />
+    <result column="visiting_team_id" jdbcType="BIGINT" property="visitingTeamId" />
+    <result column="visiting_team" jdbcType="VARCHAR" property="visitingTeam" />
+    <result column="result" jdbcType="VARCHAR" property="result" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, event_id, `time`, home_team_id, home_team, visiting_team_id, visiting_team, `result`
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from matches
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from matches
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.example.entity.Matches" useGeneratedKeys="true">
+    insert into matches (event_id, `time`, home_team_id, 
+      home_team, visiting_team_id, visiting_team, 
+      `result`)
+    values (#{eventId,jdbcType=BIGINT}, #{time,jdbcType=DATE}, #{homeTeamId,jdbcType=BIGINT}, 
+      #{homeTeam,jdbcType=VARCHAR}, #{visitingTeamId,jdbcType=BIGINT}, #{visitingTeam,jdbcType=VARCHAR}, 
+      #{result,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.example.entity.Matches" useGeneratedKeys="true">
+    insert into matches
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="eventId != null">
+        event_id,
+      </if>
+      <if test="time != null">
+        `time`,
+      </if>
+      <if test="homeTeamId != null">
+        home_team_id,
+      </if>
+      <if test="homeTeam != null">
+        home_team,
+      </if>
+      <if test="visitingTeamId != null">
+        visiting_team_id,
+      </if>
+      <if test="visitingTeam != null">
+        visiting_team,
+      </if>
+      <if test="result != null">
+        `result`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="eventId != null">
+        #{eventId,jdbcType=BIGINT},
+      </if>
+      <if test="time != null">
+        #{time,jdbcType=DATE},
+      </if>
+      <if test="homeTeamId != null">
+        #{homeTeamId,jdbcType=BIGINT},
+      </if>
+      <if test="homeTeam != null">
+        #{homeTeam,jdbcType=VARCHAR},
+      </if>
+      <if test="visitingTeamId != null">
+        #{visitingTeamId,jdbcType=BIGINT},
+      </if>
+      <if test="visitingTeam != null">
+        #{visitingTeam,jdbcType=VARCHAR},
+      </if>
+      <if test="result != null">
+        #{result,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.entity.Matches">
+    update matches
+    <set>
+      <if test="eventId != null">
+        event_id = #{eventId,jdbcType=BIGINT},
+      </if>
+      <if test="time != null">
+        `time` = #{time,jdbcType=DATE},
+      </if>
+      <if test="homeTeamId != null">
+        home_team_id = #{homeTeamId,jdbcType=BIGINT},
+      </if>
+      <if test="homeTeam != null">
+        home_team = #{homeTeam,jdbcType=VARCHAR},
+      </if>
+      <if test="visitingTeamId != null">
+        visiting_team_id = #{visitingTeamId,jdbcType=BIGINT},
+      </if>
+      <if test="visitingTeam != null">
+        visiting_team = #{visitingTeam,jdbcType=VARCHAR},
+      </if>
+      <if test="result != null">
+        `result` = #{result,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.entity.Matches">
+    update matches
+    set event_id = #{eventId,jdbcType=BIGINT},
+      `time` = #{time,jdbcType=DATE},
+      home_team_id = #{homeTeamId,jdbcType=BIGINT},
+      home_team = #{homeTeam,jdbcType=VARCHAR},
+      visiting_team_id = #{visitingTeamId,jdbcType=BIGINT},
+      visiting_team = #{visitingTeam,jdbcType=VARCHAR},
+      `result` = #{result,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

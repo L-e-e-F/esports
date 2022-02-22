@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.EventMapper">
+  <resultMap id="BaseResultMap" type="com.example.entity.Event">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="time" jdbcType="DATE" property="time" />
+    <result column="level" jdbcType="BIGINT" property="level" />
+    <result column="clubum" jdbcType="INTEGER" property="clubum" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, `name`, `time`, `level`, clubum, `status`
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from event
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from event
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.example.entity.Event" useGeneratedKeys="true">
+    insert into event (`name`, `time`, `level`, 
+      clubum, `status`)
+    values (#{name,jdbcType=VARCHAR}, #{time,jdbcType=DATE}, #{level,jdbcType=BIGINT}, 
+      #{clubum,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.example.entity.Event" useGeneratedKeys="true">
+    insert into event
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="time != null">
+        `time`,
+      </if>
+      <if test="level != null">
+        `level`,
+      </if>
+      <if test="clubum != null">
+        clubum,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null">
+        #{time,jdbcType=DATE},
+      </if>
+      <if test="level != null">
+        #{level,jdbcType=BIGINT},
+      </if>
+      <if test="clubum != null">
+        #{clubum,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.entity.Event">
+    update event
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null">
+        `time` = #{time,jdbcType=DATE},
+      </if>
+      <if test="level != null">
+        `level` = #{level,jdbcType=BIGINT},
+      </if>
+      <if test="clubum != null">
+        clubum = #{clubum,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.entity.Event">
+    update event
+    set `name` = #{name,jdbcType=VARCHAR},
+      `time` = #{time,jdbcType=DATE},
+      `level` = #{level,jdbcType=BIGINT},
+      clubum = #{clubum,jdbcType=INTEGER},
+      `status` = #{status,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
