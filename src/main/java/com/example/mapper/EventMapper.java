@@ -2,6 +2,8 @@ package com.example.mapper;
 
 import com.example.entity.Event;
 
+import java.util.LinkedList;
+
 public interface EventMapper {
     int deleteByPrimaryKey(Long id);
 
@@ -14,4 +16,10 @@ public interface EventMapper {
     int updateByPrimaryKeySelective(Event record);
 
     int updateByPrimaryKey(Event record);
+
+    Event selectByName(String name);
+
+    LinkedList<String> selectEventClub(Long id);
+
+    int insertEventMatches (Long event,Long matches);
 }

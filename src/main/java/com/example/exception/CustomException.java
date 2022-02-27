@@ -3,8 +3,8 @@ package com.example.exception;
 import com.example.enums.ResultCode;
 
 public class CustomException extends RuntimeException {
-    private int code;
-    private String message;
+    private final int code;
+    private final String message;
 
     public CustomException(ResultCode RC) {
         this.code = RC.getCode();

@@ -84,4 +84,9 @@
       `result` = #{result,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="selectALL" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from matches
+  </select>
 </mapper>

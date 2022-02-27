@@ -66,7 +66,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public Result register(@RequestBody User user) {
+    public Result<?> register(@RequestBody User user) {
         if(userService.register(user)>0)
             return Result.SuccessResult();
         return Result.ErrorResult();

@@ -13,7 +13,7 @@
     id, `name`, `time`, `level`, clubum, `status`
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from event
     where id = #{id,jdbcType=BIGINT}
@@ -95,4 +95,21 @@
       `status` = #{status,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from event
+    where `name` = #{name,jdbcType=VARCHAR}
+  </select>
+  <select id="selectEventClub" parameterType="java.lang.Long" resultType="java.lang.String">
+    SELECT c.club_name
+    FROM event_club ec
+        LEFT JOIN club c
+            ON ec.club_id = c.club_id
+    WHERE ec.event_id = #{name,jdbcType=BIGINT}
+  </select>
+  <insert id="insertEventMatches" parameterType="java.lang.Long" >
+    insert into event_matches (`event_id`, `matches_id`)
+    values (#{event,jdbcType=BIGINT}, #{matches,jdbcType=BIGINT})
+  </insert>
 </mapper>

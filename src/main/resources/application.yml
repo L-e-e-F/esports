@@ -2,6 +2,7 @@ server:
   #配置端口
   port: 8080
 
+#数据库配置
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
@@ -23,3 +24,8 @@ logging:
       example:
         mapper:
           debug
+
+#pagehelper
+  pagehelper:
+    helperDialect: mysql
+    reasonable: true

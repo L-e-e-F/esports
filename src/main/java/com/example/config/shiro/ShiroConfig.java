@@ -58,11 +58,12 @@ public class ShiroConfig {
         filterMap.put("/css/**","anon");
         filterMap.put("/js/**","anon");
         filterMap.put("/images/**","anon");
+        filterMap.put("/**","anon");
 //        filterMap.put("/front/**","anon");
-        //授权的url
-        filterMap.put("/end/**","authc");
-        //认证的url
-        filterMap.put("/add","roles[ROLE_ADMIN]");
+//        //授权的url
+//        filterMap.put("/end/**","authc");
+//        //认证的url
+//        filterMap.put("/add","roles[ROLE_ADMIN]");
 
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterMap);
