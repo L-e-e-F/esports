@@ -4,6 +4,9 @@ server:
 
 #数据库配置
 spring:
+  jackson:
+    date-format: yyyy-MM-dd
+    time-zone: GMT+8
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -26,6 +29,6 @@ logging:
           debug
 
 #pagehelper
-  pagehelper:
+pagehelper:
     helperDialect: mysql
     reasonable: true

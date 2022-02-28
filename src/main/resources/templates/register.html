@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+    <meta http-equiv="expires" content="0" />
+    <title>注册</title>
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/element.css" />
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon"/>
+  </head>
+  <body
+    style="
+      background: url('../images/bg1.jpg') no-repeat;
+      background-size: cover;
+    "
+  >
+    <div id="wrapper">
+      <div
+        style="
+          width: 400px;
+          margin: 120px auto;
+          background-color: rgba(100, 149, 237, 0.5);
+          border-radius: 10px;
+        "
+      >
+        <div
+          style="
+            width: 100%;
+            height: 100px;
+            color: #eee;
+            font-size: 30px;
+            line-height: 100px;
+            text-align: center;
+          "
+        >
+          欢迎注册
+        </div>
+        <div
+          style="
+            margin-top: 20px;
+            width: 100%;
+            height: 350px;
+            text-align: center;
+          "
+        >
+          <input
+            v-model="user.name"
+            type="text"
+            style="
+              border: 1px solid #ccc;
+              height: 40px;
+              padding: 10px;
+              width: 60%;
+            "
+            placeholder="请输入账号"
+          />
+          <input
+            v-model="user.password"
+            type="password"
+            style="
+              border: 1px solid #ccc;
+              height: 40px;
+              padding: 10px;
+              width: 60%;
+              margin-top: 20px;
+            "
+            placeholder="请输入密码"
+          />
+          <el-select
+            v-model="user.role"
+            style="width: 60%; margin-top: 20px"
+            placeholder="请选择注册用户类型"
+          >
+            <el-option
+              v-for="item in role"
+              :key="item.id"
+              :label="item.description"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+          <button
+            @click="register"
+            style="
+              height: 40px;
+              padding: 10px;
+              width: 60%;
+              margin-top: 25px;
+              background-color: steelblue;
+              color: white;
+            "
+          >
+            注册
+          </button>
+          <div style="margin-top: 25px">
+            <a
+              style="
+                width: 60%;
+                text-align: right;
+                display: inline-block;
+                color: #eee;
+              "
+              href="login.html"
+              >已有账号，去登录</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/vue.min.js"></script>
+    <script src="../js/element.js"></script>
+
+    <script>
+      new Vue({
+        el: "#wrapper",
+        data: {
+          user: {
+            name: "",
+            password: "",
+            role: "",
+          },
+          role: {
+            id: "",
+            description: "",
+          },
+          value: "",
+        },
+        created() {
+          this.Roletype();
+          if (null != sessionStorage.getItem("user")) {
+            alert("你好，您已登录请返回主页");
+            location.href = "/Index";
+          }
+        },
+        methods: {
+          register() {
+            if (!this.user.name) {
+              this.$message({
+                message: "请输入用户名",
+                type: "error",
+              });
+              return;
+            }
+            if (!this.user.password) {
+              this.$message({
+                message: "请输入密码",
+                type: "error",
+              });
+              return;
+            }
+            if (!this.user.role) {
+              this.$message({
+                message: "请选择用户类型",
+                type: "error",
+              });
+              return;
+            }
+            console.log(this.user);
+            $.ajax({
+              url: "/user/register",
+              type: "POST",
+              contentType: "application/json",
+              data: JSON.stringify(this.user),
+            }).then((res) => {
+              console.log(res);
+              if (res.code === 0) {
+                this.$message({
+                  message: "注册成功",
+                  type: "success",
+                });
+                setTimeout(() => {
+                  location.href = "/front/login.html";
+                }, 1000);
+              } else {
+                this.$message({
+                  message: res.message,
+                  type: "error",
+                });
+              }
+            });
+          },
+          Roletype() {
+            $.ajax({
+              url: "/role/roleType",
+              type: "GET",
+            }).then((res) => {
+              this.role = res;
+            });
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

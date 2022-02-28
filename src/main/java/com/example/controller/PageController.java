@@ -5,21 +5,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/")
 public class PageController {
 
-    @RequestMapping("front/{page}")
-    public String toFrontPage(@PathVariable String page) {
-        return "front/"+page;
+    @RequestMapping("/")
+    public String hello() {
+        return "login";
     }
-    @RequestMapping("end/{page}")
-    public String toEndPage(@PathVariable String page) {
-        return "end/"+page;
+
+    @RequestMapping("/{page}")
+    public String toPage(@PathVariable String page) {
+        return page;
     }
-    @RequestMapping("Index")
-    public String toIndex(){ return "index";}
-    @RequestMapping("Test")
-    public String toTest(){ return "test";}
+//    @RequestMapping("Index")
+//    public String toIndex(){ return "index";}
+//    @RequestMapping("Test")
+//    public String toTest(){ return "test";}
 //    @RequestMapping("css/{rs}")
 //    public String toCss(@PathVariable String rs) {
 //        return "css/"+rs;

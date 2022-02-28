@@ -12,4 +12,6 @@ public interface MatchesService {
     List<Long> GenerateMatches(LinkedList<String> club, Date time);
 
     Page<Matches> selectALL();
+
+    Page<Matches> selectALLByTime(Date time);
 }

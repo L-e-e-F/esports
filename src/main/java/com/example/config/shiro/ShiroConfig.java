@@ -47,14 +47,15 @@ public class ShiroConfig {
             roles:拥有某个角色权限才能访问
          */
         //登录请求
-        shiroFilterFactoryBean.setLoginUrl("/front/Login");
+        shiroFilterFactoryBean.setLoginUrl("/login");
         //未授权请求
-        shiroFilterFactoryBean.setUnauthorizedUrl("/end/Unauthorized");
+        shiroFilterFactoryBean.setUnauthorizedUrl("/Unauthorized");
         //拦截map，从上到下顺序判断
         Map<String, String> filterMap = new LinkedHashMap<>();
 //        shiroFilterFactoryBean.setLoginUrl("/login");
         //放权的url
 //        filterMap.put("/user/login","anon");
+        filterMap.put("/logout","logout");
         filterMap.put("/css/**","anon");
         filterMap.put("/js/**","anon");
         filterMap.put("/images/**","anon");

@@ -5,13 +5,14 @@
     <meta http-equiv="pragma" content="no-cache" />
     <meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
     <meta http-equiv="expires" content="0" />
-    <title>注册</title>
+    <title>登录</title>
     <link rel="stylesheet" href="../css/base.css" />
     <link rel="stylesheet" href="../css/element.css" />
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon"/>
   </head>
   <body
     style="
-      background: url('../images/bg1.jpg') no-repeat;
+      background: url('../images/bg.jpg') no-repeat;
       background-size: cover;
     "
   >
@@ -28,81 +29,62 @@
           style="
             width: 100%;
             height: 100px;
-            color: #eee;
             font-size: 30px;
             line-height: 100px;
             text-align: center;
+            color: #eee;
           "
         >
-          欢迎注册
+          欢迎登录
         </div>
-        <div
-          style="
-            margin-top: 20px;
-            width: 100%;
-            height: 350px;
-            text-align: center;
-          "
-        >
-          <input
-            v-model="user.name"
-            type="text"
-            style="
-              border: 1px solid #ccc;
-              height: 40px;
-              padding: 10px;
-              width: 60%;
-            "
-            placeholder="请输入账号"
-          />
-          <input
-            v-model="user.password"
-            type="password"
-            style="
-              border: 1px solid #ccc;
-              height: 40px;
-              padding: 10px;
-              width: 60%;
-              margin-top: 20px;
-            "
-            placeholder="请输入密码"
-          />
-          <el-select
-            v-model="user.role"
-            style="width: 60%; margin-top: 20px"
-            placeholder="请选择注册用户类型"
-          >
-            <el-option
-              v-for="item in role"
-              :key="item.id"
-              :label="item.description"
-              :value="item.id"
+        <div style="margin-top: 20px; width: 100%; height: 320px">
+          <div style="width: 60%; margin: 0 auto">
+            <input
+              v-model="user.name"
+              type="text"
+              style="
+                border: 1px solid #ccc;
+                height: 40px;
+                padding: 10px;
+                width: 100%;
+              "
+              placeholder="请输入账号"
+            />
+            <input
+              v-model="user.password"
+              type="password"
+              style="
+                border: 1px solid #ccc;
+                height: 40px;
+                padding: 10px;
+                width: 100%;
+                margin-top: 25px;
+              "
+              placeholder="请输入密码"
+            />
+            <button
+              @click="login"
+              style="
+                height: 40px;
+                padding: 10px;
+                width: 100%;
+                margin-top: 25px;
+                background-color: mediumseagreen;
+                color: white;
+              "
             >
-            </el-option>
-          </el-select>
-          <button
-            @click="register"
-            style="
-              height: 40px;
-              padding: 10px;
-              width: 60%;
-              margin-top: 25px;
-              background-color: steelblue;
-              color: white;
-            "
-          >
-            注册
-          </button>
-          <div style="margin-top: 25px">
+              登录
+            </button>
             <a
               style="
-                width: 60%;
+                width: 100%;
                 text-align: right;
                 display: inline-block;
+                margin-top: 25px;
                 color: #eee;
               "
-              href="login.html"
-              >已有账号，去登录</a
+              href="register.html"
+              >还没账号？去注册</a
             >
           </div>
         </div>
@@ -111,31 +93,28 @@
     <script src="../js/jquery.min.js"></script>
     <script src="../js/vue.min.js"></script>
     <script src="../js/element.js"></script>
-
+    <script src="../js/gVerify.js"></script>
     <script>
+      //初始化验证码
+      let verifyCode;
+
       new Vue({
         el: "#wrapper",
         data: {
           user: {
             name: "",
             password: "",
-            role: "",
           },
-          role: {
-            id: "",
-            description: "",
-          },
-          value: "",
         },
         created() {
-          this.Roletype();
+          // this.Roletype()
           if (null != sessionStorage.getItem("user")) {
             alert("你好，您已登录请返回主页");
             location.href = "/Index";
           }
         },
         methods: {
-          register() {
+          login() {
             if (!this.user.name) {
               this.$message({
                 message: "请输入用户名",
@@ -150,16 +129,9 @@
               });
               return;
             }
-            if (!this.user.role) {
-              this.$message({
-                message: "请选择用户类型",
-                type: "error",
-              });
-              return;
-            }
-            console.log(this.user);
+            console.log(JSON.stringify(this.user));
             $.ajax({
-              url: "/user/register",
+              url: "/user/login",
               type: "POST",
               contentType: "application/json",
               data: JSON.stringify(this.user),
@@ -167,11 +139,13 @@
               console.log(res);
               if (res.code === 0) {
                 this.$message({
-                  message: "注册成功",
+                  message: "登录成功",
                   type: "success",
                 });
+                console.log(res.data);
+                sessionStorage.setItem("user", res.data.nickName);
                 setTimeout(() => {
-                  location.href = "/front/login.html";
+                  location.href = res.data.url;
                 }, 1000);
               } else {
                 this.$message({
@@ -179,14 +153,6 @@
                   type: "error",
                 });
               }
-            });
-          },
-          Roletype() {
-            $.ajax({
-              url: "/role/roleType",
-              type: "GET",
-            }).then((res) => {
-              this.role = res;
             });
           },
         },

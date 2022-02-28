@@ -5,6 +5,7 @@ import com.example.entity.Event;
 import com.example.service.EventService;
 import com.example.service.MatchesService;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +23,7 @@ public class EventController {
     private MatchesService matchesService;
 
     @PostMapping("/AddMatches")
-    public Result<?> AddMatches(String EventName){
+    public Result<?> AddMatches(@RequestBody String EventName){
 //    public Result<?> AddMatches(){
         Event event = eventService.selectByName(EventName);
 //        Event event = eventService.selectByName("DPC");

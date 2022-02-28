@@ -89,4 +89,10 @@
     <include refid="Base_Column_List" />
     from matches
   </select>
+  <select id="selectALLByTime" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from matches
+    where `time` = #{time,jdbcType=DATE}
+  </select>
 </mapper>

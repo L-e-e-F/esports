@@ -3,6 +3,9 @@ package com.example.mapper;
 import com.example.entity.Matches;
 import com.github.pagehelper.Page;
 
+import java.util.Date;
+
+
 public interface MatchesMapper {
     int deleteByPrimaryKey(Long id);
 
@@ -17,4 +20,6 @@ public interface MatchesMapper {
     int updateByPrimaryKey(Matches record);
 
     Page<Matches> selectALL();
+
+    Page<Matches> selectALLByTime(Date time);
 }

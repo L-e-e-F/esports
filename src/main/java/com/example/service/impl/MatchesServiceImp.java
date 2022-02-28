@@ -34,6 +34,7 @@ public class MatchesServiceImp implements MatchesService {
                     matches.setTime(calendar.getTime());
                     matches.setHomeTeam(club.get(j));
                     matches.setVisitingTeam(club.get(club.size() - 1 - j));
+                    matches.setResult("未出结果");
                     matchesMapper.insertSelective(matches);
                     list.add(matches.getId());
                     System.out.println(list);
@@ -48,5 +49,10 @@ public class MatchesServiceImp implements MatchesService {
     @Override
     public Page<Matches> selectALL() {
         return matchesMapper.selectALL();
+    }
+
+    @Override
+    public Page<Matches> selectALLByTime(Date time) {
+        return matchesMapper.selectALLByTime(time);
     }
 }

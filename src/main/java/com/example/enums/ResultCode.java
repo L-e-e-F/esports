@@ -6,7 +6,8 @@ public enum ResultCode {
     USER_NOT_FOUND(-1, "没有找到此用户"),
     USER_IS_FOUND(-1,"用户已经注册"),
     PASSWORD_FOUND(-1, "密码错误"),
-    UN_PERMISSION(-1, "没有权限");
+    UN_PERMISSION(-1, "没有权限"),
+    EMPTY_MATCHES(-1,"今日无比赛");
 
 
     final private int code;
