@@ -28,7 +28,6 @@ public class MatchesServiceImp implements MatchesService {
             if(i > 0){
                 calendar.add(Calendar.DATE,1);
             }
-//            SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd");
             for (int j = 0; j < club.size() / 2; j++)  {
                 if(club.get(j) !=null && club.get(club.size() - 1 - j)!=null){
                     matches.setTime(calendar.getTime());

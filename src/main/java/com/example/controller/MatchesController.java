@@ -18,17 +18,20 @@ public class MatchesController {
     private MatchesService matchesService;
 
     @GetMapping("/all")
-    public Result<?> selectALL(@RequestParam Integer pageNum,@RequestParam Integer pageSize){
+    public Result<?> selectALL(@RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                               @RequestParam(required = false, defaultValue = "5") Integer pageSize){
         PageHelper.startPage(pageNum, pageSize);
         PageInfo page = new PageInfo(matchesService.selectALL());
+        if(page.getTotal() == 0)
+            return Result.ErrorResult(ResultCode.ERROR_MATCHES);
         return Result.SuccessResult(page);
     }
 
-    @CrossOrigin
     @GetMapping("/time")
     public Result<?> selectALLByTime(@RequestParam Integer pageNum, @RequestParam Integer pageSize){
         PageHelper.startPage(pageNum,pageSize);
         Date time = new Date();
+
         PageInfo page = new PageInfo(matchesService.selectALLByTime(time));
         if(page.getTotal() == 0)
             return Result.ErrorResult(ResultCode.EMPTY_MATCHES);

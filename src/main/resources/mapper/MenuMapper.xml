@@ -61,7 +61,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="listMenuByRoleId" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select menu.* from menu_role, menu
-    where menu_role.role_id = #{value} and menu_role.menu_id = menu.id
+    select menu.name,menu.url from role_menu, menu
+    where role_menu.role_id = #{value} and role_menu.menu_id = menu.id
   </select>
 </mapper>

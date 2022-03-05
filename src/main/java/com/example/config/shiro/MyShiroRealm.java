@@ -1,8 +1,6 @@
 package com.example.config.shiro;
 
-import com.example.entity.Menu;
 import com.example.entity.User;
-import com.example.service.MenuService;
 import com.example.service.RoleService;
 import com.example.service.UserService;
 import org.apache.shiro.authc.AuthenticationException;
@@ -16,8 +14,6 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-
-import java.util.List;
 
 public class MyShiroRealm extends AuthorizingRealm {
 
@@ -35,12 +31,11 @@ public class MyShiroRealm extends AuthorizingRealm {
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        System.out.println(1);
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         User user = (User) principals.getPrimaryPrincipal();
         // 普通用户，查询用户的角色
 //        Long userId = user.getUserId();
-        String role = roleService.getRoleById(user.getRole());
+        String role = roleService.selectByPrimaryKey(user.getRole());
         authorizationInfo.addRole(role);
         //if(null != role)
             //List<Menu> menus = menuService.listMenuByRoleId(user.getRole());

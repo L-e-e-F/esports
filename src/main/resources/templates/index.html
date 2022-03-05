@@ -17,15 +17,13 @@
     <el-table :data="tableData" border style="width: 100%">
       <el-table-column
               prop="time"
-              label="Time"
+              label="时间"
               width="120"
               sortable
       ></el-table-column>
       <el-table-column prop="homeTeam" label="主队"></el-table-column>
       <el-table-column prop="visitingTeam" label="客队"></el-table-column>
-      <el-table-column prop="result" label="结果">
-        <v-if> </v-if>
-      </el-table-column>
+      <el-table-column prop="result" label="结果"></el-table-column>
     </el-table>
     <!-- 分页 -->
     <div style="background-color: white; padding: 10px 0">
@@ -33,9 +31,8 @@
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
               :current-page="pageNum"
-              :page-sizes="[5, 10, 20, 40]"
               :page-size="pageSize"
-              layout="total, sizes, prev, pager, next, jumper"
+              layout="total, prev, pager, next, jumper"
               :total="total"
       >
       </el-pagination>
@@ -54,15 +51,15 @@
   </div>
 </div>
 <script src="../js/jquery.min.js"></script>
-<script src="../js/vue.min.js"></script>
+<script src="../js/vue.js"></script>
 <script src="../js/element.js"></script>
 <script>
   new Vue({
     el: "#wrapper",
     data: {
-      tableData: {},
+      tableData: [],
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 5,
       total: 0,
     },
     created() {
@@ -71,7 +68,6 @@
     methods: {
       loadTable() {
         $.get(
-                "http://localhost:8080" +
                 "/matches/time?pageNum=" +
                 this.pageNum +
                 "&pageSize=" +

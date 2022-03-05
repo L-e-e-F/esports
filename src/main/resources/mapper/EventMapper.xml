@@ -5,7 +5,7 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="time" jdbcType="DATE" property="time" />
-    <result column="level" jdbcType="BIGINT" property="level" />
+    <result column="level" jdbcType="VARCHAR" property="level" />
     <result column="clubum" jdbcType="INTEGER" property="clubum" />
     <result column="status" jdbcType="VARCHAR" property="status" />
   </resultMap>
@@ -25,7 +25,7 @@
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.example.entity.Event" useGeneratedKeys="true">
     insert into event (`name`, `time`, `level`, 
       clubum, `status`)
-    values (#{name,jdbcType=VARCHAR}, #{time,jdbcType=DATE}, #{level,jdbcType=BIGINT}, 
+    values (#{name,jdbcType=VARCHAR}, #{time,jdbcType=DATE}, #{level,jdbcType=VARCHAR},
       #{clubum,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.example.entity.Event" useGeneratedKeys="true">
@@ -55,7 +55,7 @@
         #{time,jdbcType=DATE},
       </if>
       <if test="level != null">
-        #{level,jdbcType=BIGINT},
+        #{level,jdbcType=VARCHAR},
       </if>
       <if test="clubum != null">
         #{clubum,jdbcType=INTEGER},
@@ -75,7 +75,7 @@
         `time` = #{time,jdbcType=DATE},
       </if>
       <if test="level != null">
-        `level` = #{level,jdbcType=BIGINT},
+        `level` = #{level,jdbcType=VARCHAR},
       </if>
       <if test="clubum != null">
         clubum = #{clubum,jdbcType=INTEGER},
@@ -90,7 +90,7 @@
     update event
     set `name` = #{name,jdbcType=VARCHAR},
       `time` = #{time,jdbcType=DATE},
-      `level` = #{level,jdbcType=BIGINT},
+      `level` = #{level,jdbcType=VARCHAR},
       clubum = #{clubum,jdbcType=INTEGER},
       `status` = #{status,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}

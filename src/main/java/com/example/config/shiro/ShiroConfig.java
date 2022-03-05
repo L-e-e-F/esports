@@ -55,11 +55,15 @@ public class ShiroConfig {
 //        shiroFilterFactoryBean.setLoginUrl("/login");
         //放权的url
 //        filterMap.put("/user/login","anon");
-        filterMap.put("/logout","logout");
         filterMap.put("/css/**","anon");
         filterMap.put("/js/**","anon");
         filterMap.put("/images/**","anon");
-        filterMap.put("/**","anon");
+        filterMap.put("/login","anon");
+        filterMap.put("/register","anon");
+        filterMap.put("/user/login","anon");
+        filterMap.put("/user/register","anon");
+        filterMap.put("/logout","logout");
+        filterMap.put("/{page}","authc");
 //        filterMap.put("/front/**","anon");
 //        //授权的url
 //        filterMap.put("/end/**","authc");

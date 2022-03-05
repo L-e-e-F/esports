@@ -17,7 +17,5 @@ public interface RoleMapper {
 
     int updateByPrimaryKey(Role record);
 
-    String getRoleById(Long id);
-
     List<Role> getAllUserType();
 }

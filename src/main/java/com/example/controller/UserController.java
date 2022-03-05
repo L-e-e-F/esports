@@ -1,7 +1,6 @@
 package com.example.controller;
 
 import com.example.common.Result;
-import com.example.entity.LoginUser;
 import com.example.entity.User;
 import com.example.enums.ResultCode;
 import com.example.service.UserService;
@@ -49,18 +48,20 @@ public class UserController {
             e.printStackTrace();
             return Result.ErrorResult(e.getMessage());
         }
-        LoginUser loginuser = new LoginUser();
-        loginuser.setNickName(userService.getNickNameByName(user.getName()));
+//        LoginUser loginuser = new LoginUser();
+//        User u = (User) SecurityUtils.getSubject().getPrincipal();
+//        loginuser.setNickName(u.getNickName());
+//        loginuser.setRole(u.getRole());
         SavedRequest savedRequest=WebUtils.getSavedRequest(request);
-        User userout = (User) SecurityUtils.getSubject().getPrincipal();
-        System.out.println(userout);
         if(null != savedRequest){
-            loginuser.setUrl(WebUtils.getSavedRequest(request).getRequestUrl());
+//            loginuser.setUrl(WebUtils.getSavedRequest(request).getRequestUrl());
+            return Result.SuccessResult(WebUtils.getSavedRequest(request).getRequestUrl());
         }
         else{
-            loginuser.setUrl("/frame");
+//            loginuser.setUrl("/frame");
+            return Result.SuccessResult("/frame");
         }
-        return Result.SuccessResult(loginuser);
+//        return Result.SuccessResult(loginuser);
     }
 
     @PostMapping("/register")
@@ -68,6 +69,19 @@ public class UserController {
         if(userService.register(user)>0)
             return Result.SuccessResult();
         return Result.ErrorResult();
+    }
+
+    @GetMapping("/LoginUser")
+    public Result<?> LoginUser(){
+        User Loginuser = (User) SecurityUtils.getSubject().getPrincipal();
+        if(null != Loginuser){
+            User u = new User();
+            u.setNickName(Loginuser.getNickName());
+            u.setRole(Loginuser.getRole());
+            System.out.println(u);
+            return Result.SuccessResult(u);
+        }
+        return Result.ErrorResult(ResultCode.USER_NOT_LOGIN);
     }
 
 }

@@ -24,9 +24,7 @@ public class EventController {
 
     @PostMapping("/AddMatches")
     public Result<?> AddMatches(@RequestBody String EventName){
-//    public Result<?> AddMatches(){
         Event event = eventService.selectByName(EventName);
-//        Event event = eventService.selectByName("DPC");
         LinkedList<String> club = eventService.selectEventClub(event.getId());
         List<Long> list = matchesService.GenerateMatches(club,event.getTime());
         Long eventId = event.getId();

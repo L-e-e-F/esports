@@ -60,12 +60,6 @@
       `role` = #{role,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="getRoleById" parameterType="java.lang.Long" resultType="java.lang.String">
-    select
-    `role`
-    from role
-    where id = #{id,jdbcType=BIGINT}
-  </select>
   <select id="getAllUserType" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

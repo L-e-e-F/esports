@@ -23,7 +23,7 @@ public class Event implements Serializable {
     /**
      * 赛事级别
      */
-    private Long level;
+    private String level;
 
     /**
      * 赛事俱乐部数量

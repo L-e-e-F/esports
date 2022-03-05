@@ -1,20 +1,14 @@
 package com.example.enums;
 
 public enum Roles {
-    ROLE_ADMIN(1, "管理员"),
-    ROLE_USER(2, "普通用户"),
-    ROLE_CLUB(3, "俱乐部"),
-    ROLE_CHAMPIONSHIP(4, "赛事方");
-    final private int code;
+    ROLE_ADMIN( "admin"),
+    ROLE_USER("user"),
+    ROLE_CLUB("club"),
+    ROLE_CHAMPIONSHIP("championship");
     final private String name;
 
-    Roles(int code, String name) {
-        this.code = code;
+    Roles(String name) {
         this.name = name;
-    }
-
-    public int getCode() {
-        return code;
     }
 
     public String getName() {

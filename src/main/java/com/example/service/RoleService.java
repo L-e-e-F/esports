@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface RoleService {
 
-    String getRoleById(Long id);
+    String selectByPrimaryKey(Long id);
 
-    List<Role> getAllUserType();;
+    List<Role> getAllUserType();
 }

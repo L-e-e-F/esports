@@ -95,4 +95,13 @@
       club_points = #{clubPoints,jdbcType=INTEGER}
     where club_id = #{clubId,jdbcType=BIGINT}
   </update>
+  <select id="selectALL" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from club
+    where club_group = #{group,jdbcType=VARCHAR}
+      <if test="name != null">
+        AND club_name = #{name,jdbcType=VARCHAR}
+      </if>
+  </select>
 </mapper>

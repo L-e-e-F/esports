@@ -11,6 +11,10 @@ public class LoginUser implements Serializable {
      */
     private String nickName;
     /**
+     * 用户角色
+     */
+    private Long role;
+    /**
      * 登录后跳转链接
      */
     private String url;
