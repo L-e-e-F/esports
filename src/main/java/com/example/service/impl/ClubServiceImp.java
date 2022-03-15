@@ -7,6 +7,7 @@ import com.github.pagehelper.Page;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class ClubServiceImp implements ClubService {
@@ -20,9 +21,8 @@ public class ClubServiceImp implements ClubService {
     }
 
     @Override
-    public Long insertSelective(Club record) {
-        clubMapper.insertSelective(record);
-        return record.getClubId();
+    public int insertSelective(Club record) {
+        return clubMapper.insertSelective(record);
     }
 
     @Override
@@ -33,6 +33,21 @@ public class ClubServiceImp implements ClubService {
     @Override
     public int deleteByPrimaryKey(Long clubId) {
         return clubMapper.deleteByPrimaryKey(clubId);
+    }
+
+    @Override
+    public List<Club> selectEventClub(Long id) {
+        return clubMapper.selectEventClub(id);
+    }
+
+    @Override
+    public List<Club> ALL(String group) {
+        return clubMapper.ALL(group);
+    }
+
+    @Override
+    public void updateClubPoints(String club) {
+        clubMapper.updateClubPoints(club);
     }
 
 }

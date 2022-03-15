@@ -11,7 +11,13 @@ public interface MatchesService {
 
     List<Long> GenerateMatches(LinkedList<String> club, Date time);
 
-    Page<Matches> selectALL();
+    Page<Matches> selectALL(String club,String name);
 
     Page<Matches> selectALLByTime(Date time);
+
+    int insertSelective(Matches entity);
+
+    int updateByPrimaryKeySelective(Matches record);
+
+    int deleteByPrimaryKey(Long id);
 }

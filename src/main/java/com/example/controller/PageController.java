@@ -1,22 +1,27 @@
 package com.example.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-@Controller
+@Controller("/")
 public class PageController {
 
-    @RequestMapping("/")
+    @GetMapping
     public String hello() {
         return "login";
     }
 
-    @RequestMapping("/{page}")
+    @GetMapping("/{page}")
     public String toPage(@PathVariable String page) {
         System.out.println(page);
         return page;
     }
+
+//    @GetMapping("favicon.ico")
+//    @ResponseBody
+//    void noFavicon() {
+//    }
 //    @RequestMapping("Index")
 //    public String toIndex(){ return "index";}
 //    @RequestMapping("Test")

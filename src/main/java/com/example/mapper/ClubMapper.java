@@ -3,6 +3,8 @@ package com.example.mapper;
 import com.example.entity.Club;
 import com.github.pagehelper.Page;
 
+import java.util.List;
+
 public interface ClubMapper {
     int deleteByPrimaryKey(Long clubId);
 
@@ -17,4 +19,10 @@ public interface ClubMapper {
     int updateByPrimaryKey(Club record);
 
     Page<Club> selectALL(String group, String name);
+
+    List<Club> selectEventClub (Long id);
+
+    List<Club> ALL(String group);
+
+    void updateClubPoints (String club);
 }

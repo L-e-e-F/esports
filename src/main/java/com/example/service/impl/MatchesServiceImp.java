@@ -46,12 +46,27 @@ public class MatchesServiceImp implements MatchesService {
     }
 
     @Override
-    public Page<Matches> selectALL() {
-        return matchesMapper.selectALL();
+    public Page<Matches> selectALL(String club, String name) {
+        return matchesMapper.selectALL(club,name);
     }
 
     @Override
     public Page<Matches> selectALLByTime(Date time) {
         return matchesMapper.selectALLByTime(time);
+    }
+
+    @Override
+    public int insertSelective(Matches entity) {
+        return matchesMapper.insertSelective(entity);
+    }
+
+    @Override
+    public int updateByPrimaryKeySelective(Matches record) {
+        return matchesMapper.updateByPrimaryKeySelective(record);
+    }
+
+    @Override
+    public int deleteByPrimaryKey(Long id) {
+        return matchesMapper.deleteByPrimaryKey(id);
     }
 }

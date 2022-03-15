@@ -26,6 +26,8 @@ public class Player implements Serializable {
      */
     private Long playerClub;
 
+    private String clubName;
+
     private static final long serialVersionUID = 1L;
 
     @Override

@@ -32,7 +32,7 @@
         <!-- mysql -->
         <mysql.version>8.0.27</mysql.version>
         <!-- shiro -->
-        <shiro.version>1.4.0</shiro.version>
+        <shiro.version>1.2.0</shiro.version>
         <!-- page helper -->
         <pagehelper.version>1.4.1</pagehelper.version>
     </properties>

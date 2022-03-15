@@ -1,76 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.PlayerMapper">
-  <resultMap id="BaseResultMap" type="com.example.entity.Player">
-    <id column="player_id" jdbcType="BIGINT" property="playerId" />
-    <result column="player_name" jdbcType="VARCHAR" property="playerName" />
-    <result column="player_position" jdbcType="INTEGER" property="playerPosition" />
-    <result column="player_club" jdbcType="BIGINT" property="playerClub" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    player_id, player_name, player_position, player_club
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from player
-    where player_id = #{playerId,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from player
-    where player_id = #{playerId,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" keyColumn="player_id" keyProperty="playerId" parameterType="com.example.entity.Player" useGeneratedKeys="true">
-    insert into player (player_name, player_position, player_club
-      )
-    values (#{playerName,jdbcType=VARCHAR}, #{playerPosition,jdbcType=INTEGER}, #{playerClub,jdbcType=BIGINT}
-      )
-  </insert>
-  <insert id="insertSelective" keyColumn="player_id" keyProperty="playerId" parameterType="com.example.entity.Player" useGeneratedKeys="true">
-    insert into player
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="playerName != null">
-        player_name,
-      </if>
-      <if test="playerPosition != null">
-        player_position,
-      </if>
-      <if test="playerClub != null">
-        player_club,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="playerName != null">
-        #{playerName,jdbcType=VARCHAR},
-      </if>
-      <if test="playerPosition != null">
-        #{playerPosition,jdbcType=INTEGER},
-      </if>
-      <if test="playerClub != null">
-        #{playerClub,jdbcType=BIGINT},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.example.entity.Player">
-    update player
-    <set>
-      <if test="playerName != null">
-        player_name = #{playerName,jdbcType=VARCHAR},
-      </if>
-      <if test="playerPosition != null">
-        player_position = #{playerPosition,jdbcType=INTEGER},
-      </if>
-      <if test="playerClub != null">
-        player_club = #{playerClub,jdbcType=BIGINT},
-      </if>
-    </set>
-    where player_id = #{playerId,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.example.entity.Player">
-    update player
-    set player_name = #{playerName,jdbcType=VARCHAR},
-      player_position = #{playerPosition,jdbcType=INTEGER},
-      player_club = #{playerClub,jdbcType=BIGINT}
-    where player_id = #{playerId,jdbcType=BIGINT}
-  </update>
+    <resultMap id="BaseResultMap" type="com.example.entity.Player">
+        <id column="player_id" jdbcType="BIGINT" property="playerId"/>
+        <result column="player_name" jdbcType="VARCHAR" property="playerName"/>
+        <result column="player_position" jdbcType="INTEGER" property="playerPosition"/>
+        <result column="player_club" jdbcType="BIGINT" property="playerClub"/>
+        <result column="club_name" jdbcType="VARCHAR" property="clubName"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        player_id
+        , player_name, player_position, player_club
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from player
+        where player_id = #{playerId,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from player
+        where player_id = #{playerId,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" keyColumn="player_id" keyProperty="playerId" parameterType="com.example.entity.Player"
+            useGeneratedKeys="true">
+        insert into player (player_name, player_position, player_club)
+        values (#{playerName,jdbcType=VARCHAR}, #{playerPosition,jdbcType=INTEGER}, #{playerClub,jdbcType=BIGINT})
+    </insert>
+    <insert id="insertSelective" keyColumn="player_id" keyProperty="playerId" parameterType="com.example.entity.Player"
+            useGeneratedKeys="true">
+        insert into player
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="playerName != null">
+                player_name,
+            </if>
+            <if test="playerPosition != null">
+                player_position,
+            </if>
+            <if test="playerClub != null">
+                player_club,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="playerName != null">
+                #{playerName,jdbcType=VARCHAR},
+            </if>
+            <if test="playerPosition != null">
+                #{playerPosition,jdbcType=INTEGER},
+            </if>
+            <if test="playerClub != null">
+                #{playerClub,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.example.entity.Player">
+        update player
+        <set>
+            <if test="playerName != null">
+                player_name = #{playerName,jdbcType=VARCHAR},
+            </if>
+            <if test="playerPosition != null">
+                player_position = #{playerPosition,jdbcType=INTEGER},
+            </if>
+            <if test="playerClub != null">
+                player_club = #{playerClub,jdbcType=BIGINT},
+            </if>
+        </set>
+        where player_id = #{playerId,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.example.entity.Player">
+        update player
+        set player_name     = #{playerName,jdbcType=VARCHAR},
+            player_position = #{playerPosition,jdbcType=INTEGER},
+            player_club     = #{playerClub,jdbcType=BIGINT}
+        where player_id = #{playerId,jdbcType=BIGINT}
+    </update>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select p.*,c.club_name
+        from player p
+        LEFT JOIN club c
+        on p.player_club=c.club_id
+        where
+        p.player_position = #{position,jdbcType=INTEGER}
+        <if test="name != ''">
+            AND p.player_name = #{name,jdbcType=VARCHAR}
+        </if>
+        <if test="club != ''">
+            AND c.club_name = #{club,jdbcType=VARCHAR}
+        </if>
+    </select>
 </mapper>

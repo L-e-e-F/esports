@@ -2,13 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="pragma" content="no-cache" />
-    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
-    <meta http-equiv="expires" content="0" />
-    <title>后台管理</title>
+    <title>俱乐部管理</title>
     <link rel="stylesheet" href="../css/element.css" />
     <link rel="stylesheet" href="../css/base.css" />
-    <style></style>
 </head>
 <body>
 <div id="wrapper" v-cloak>
@@ -19,7 +15,7 @@
                         v-model="search"
                         style="width: 20%"
                         suffix-icon="el-icon-search"
-                        placeholder="请输入关键字搜索"
+                        placeholder="请输入战队名搜索"
                 ></el-input>
                 <el-button @click="loadTable" type="primary" style="margin: 5px 0"
                 >查询</el-button
@@ -87,7 +83,7 @@
                         v-model="search"
                         style="width: 20%"
                         suffix-icon="el-icon-search"
-                        placeholder="请输入关键字搜索"
+                        placeholder="请输入战队名搜索"
                 ></el-input>
                 <el-button @click="loadTable" type="primary" style="margin: 5px 0"
                 >查询</el-button
@@ -157,21 +153,18 @@
                :close-on-click-modal="false">
         <el-form :model="entity">
             <el-form-item v-if="entity.clubId != null" label="队标" label-width="100px">
-                <el-upload action="/club/img" ref="upload" :show-file-list="true" :file-list="fileList" :auto-upload="false" :on-change="fileChange" :on-success="handleSuccess">
-                    <el-button>选择文件</el-button>
+                <el-upload action="/club/set/img" ref="upload" :show-file-list="true" :file-list="fileList" :auto-upload="false" :on-change="fileChange" :on-success="handleSuccess">
+                    <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                    <el-button style="margin-left: 10px;" size="small" type="success" @click="uploadFile">上传</el-button>
                 </el-upload>
-                <el-button size="small" type="primary" @click="uploadFile" >点击上传</el-button>
+<!--                <el-button size="small" type="primary" @click="uploadFile" >点击上传</el-button>-->
             </el-form-item>
             <el-form-item label="俱乐部级别" label-width="100px">
-                    <el-select v-model="entity.clubGroup" placeholder="请选择" style="width: 80%">
-                    <el-option
-                            v-for="item in level"
-                            :key="item.name"
-                            :label="item.name"
-                            :value="item.name"
-                    >
-                    </el-option>
-                    </el-select>
+                <el-input
+                        v-model="entity.clubGroup"
+                        :disabled="true"
+                        style="width: 80%">
+                </el-input>
             </el-form-item>
             <el-form-item label="俱乐部名" label-width="100px">
                 <el-input v-model="entity.clubName" autocomplete="off" style="width: 80%"></el-input>
@@ -197,20 +190,12 @@
             tableData: [],
             entity: {},
             pageNum: 1,
-            pageSize: 4,
+            pageSize: 5,
             total: 0,
             group: "S",
-            search: null,
+            search: '',
             dialogFormVisible: false,
             fileList: [],
-            level: [
-                {
-                    name : "S"
-                },
-                {
-                    name : "A"
-                }
-            ]
         },
         created() {
             this.loadTable();
@@ -221,22 +206,27 @@
         methods: {
             loadTable() {
                 console.log(this.search)
-                if(this.search === null){
+                if(!this.search){
                     $.get(
-                        "/club/?pageNum=" +
+                        "/club/all?pageNum=" +
                         this.pageNum +
                         "&pageSize=" +
                         this.pageSize +
                         "&group=" +
                         this.group
                     ).then((res) => {
-                        console.log(res.data);
-                        this.tableData = res.data.list;
-                        this.total = res.data.total;
+                        if (res.code === 0) {
+                            this.tableData = res.data.list;
+                            this.total = res.data.total;
+                            console.log(this.total)
+                        } else {
+                            this.tableData = [];
+                            this.total = 0;
+                        }
                     });
                 }else{
                     $.get(
-                        "/club/?pageNum=" +
+                        "/club/all?pageNum=" +
                         this.pageNum +
                         "&pageSize=" +
                         this.pageSize +
@@ -245,13 +235,13 @@
                         "&name=" +
                         this.search
                     ).then((res) => {
-                        if(res.code === 0){
+                        if (res.code === 0) {
                             this.tableData = res.data.list;
                             this.total = res.data.total;
                             console.log(this.total)
-                        }else{
-                            this.tableData = null;
-                            this.total = null;
+                        } else {
+                            this.tableData = [];
+                            this.total = 0;
                         }
                     });
                 }
@@ -275,6 +265,7 @@
             },
             add() {
                 this.entity = {}
+                this.entity.clubGroup = this.group;
                 this.dialogFormVisible = true;
             },
             edit(obj){
@@ -283,25 +274,25 @@
                 this.entity = JSON.parse(JSON.stringify(obj));
                 this.dialogFormVisible = true;
             },
-            upload(){
-                let f = document.getElementById("img")[0];
-                f.action=f.action+"id="+this.entity.clubId;
-                console.log(f.action)
-            },
             fileChange(file, fileList){
                 if (fileList.length > 0) {
                     this.fileList = [fileList[fileList.length - 1]]
                 }
             },
+            upload(){
+                let f = document.getElementById("img")[0];
+                f.action=f.action+"id="+this.entity.clubId;
+                console.log(f.action)
+            },
             uploadFile(){
+                console.log(this.fileList)
                 this.$refs.upload.submit();
             },
             del(obj){
                 console.log(obj)
                 $.ajax({
-                    url: "/club/" + obj,
+                    url: "/club/set/" + obj,
                     type: 'DELETE',
-                    contentType: "application/json"
                 }).then((res) => {
                     if(res.code === 0){
                         this.$message({
@@ -310,54 +301,77 @@
                         });
                         this.loadTable();
                     }else {
-                        this.$message({
-                            message: res.message,
-                            type: "error"
-                        })
+                        if(res.message === "未知异常"){
+                            this.$message({
+                                message: "权限不足",
+                                type: "error"
+                            })
+                        }else{
+                            this.$message({
+                                message: res.message,
+                                type: "error"
+                            })
+                        }
                     }
                 })
             },
             save(){
-                this.$refs.upload.submit();
                 if (!this.entity.clubName) {
                     this.$message({
                         message: "请填写俱乐部名",
                         type: "warning"
                     })
+                    return;
+                }else{
+                    for (let key in this.tableData) {
+                        if(key.clubName === this.entity.clubName){
+                            this.$message({
+                                message: "俱乐部名重复",
+                                type: "warning"
+                            })
+                            return;
+                        }
+                    }
                 }
                 if (!this.entity.clubCoach) {
                     this.$message({
-                        message: "请填写俱乐部名",
+                        message: "请填写教练名",
                         type: "warning"
                     })
+                    return;
                 }
-                if(this.entity.clubImg === null){
+                if(this.entity.clubImg === undefined){
                     this.entity.clubImg = "../images/default.png"
                 }
-                if(this.entity.clubGroup === null){
-                    this.entity.clubGroup = this.group
-                }
                 let type = this.entity.clubId ? "PUT" : "POST";
+                if(!this.entity.clubId){
+                    this.entity.clubPoints = 0
+                }
                 $.ajax({
-                    url: "/club",
+                    url: "/club/set/",
                     type: type,
                     contentType: "application/json",
                     data: JSON.stringify(this.entity)
                 }).then((res) => {
-                    if (res.code === 0) {
-                        console.log(res.data)
+                    if(typeof(res.code) === "undefined"){
+                        this.$message({
+                            message: "权限不足",
+                            type: "error"
+                        })
+                    }
+                    else if (res.code === 0) {
                         this.$message({
                             message: "保存成功",
                             type: "success"
                         });
                         this.loadTable();
-                        this.dialogFormVisible = false;
                     } else {
                         this.$message({
                             message: res.message,
                             type: "error"
                         })
                     }
+                    this.dialogFormVisible = false;
                 })
             }
         },

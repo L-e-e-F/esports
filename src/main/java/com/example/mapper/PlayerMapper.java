@@ -1,6 +1,7 @@
 package com.example.mapper;
 
 import com.example.entity.Player;
+import com.github.pagehelper.Page;
 
 public interface PlayerMapper {
     int deleteByPrimaryKey(Long playerId);
@@ -14,4 +15,6 @@ public interface PlayerMapper {
     int updateByPrimaryKeySelective(Player record);
 
     int updateByPrimaryKey(Player record);
+
+    Page<Player> selectAll(int position,String name, String club);
 }

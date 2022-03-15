@@ -36,6 +36,7 @@ public class MyShiroRealm extends AuthorizingRealm {
         // 普通用户，查询用户的角色
 //        Long userId = user.getUserId();
         String role = roleService.selectByPrimaryKey(user.getRole());
+        System.out.println(role);
         authorizationInfo.addRole(role);
         //if(null != role)
             //List<Menu> menus = menuService.listMenuByRoleId(user.getRole());
@@ -53,6 +54,7 @@ public class MyShiroRealm extends AuthorizingRealm {
 //        System.out.println(userService.getUserByName((String) token.getPrincipal()));
 //        System.out.println(userService.getUserByName("LEEF"));
         User user = userService.getUserByName((String) token.getPrincipal());
+        System.out.println(user);
         if (user == null){
             return null;//UnknownAccountException
         }

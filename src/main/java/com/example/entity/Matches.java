@@ -17,6 +17,8 @@ public class Matches implements Serializable {
 
     private String result;
 
+    private String name;
+
     private static final long serialVersionUID = 1L;
 
     @Override

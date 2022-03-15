@@ -106,10 +106,68 @@
     FROM event_club ec
         LEFT JOIN club c
             ON ec.club_id = c.club_id
-    WHERE ec.event_id = #{name,jdbcType=BIGINT}
+    WHERE ec.event_id = #{id,jdbcType=BIGINT}
   </select>
   <insert id="insertEventMatches" parameterType="java.lang.Long" >
     insert into event_matches (`event_id`, `matches_id`)
     values (#{event,jdbcType=BIGINT}, #{matches,jdbcType=BIGINT})
   </insert>
+  <update id="updateEventMatches" parameterType="java.lang.Long">
+    update event_matches
+    set `event_id` = #{event,jdbcType=VARCHAR}
+        where `matches_id` = #{matches,jdbcType=BIGINT}
+  </update>
+  <select id="selectALL" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from event
+    where `level` = #{group,jdbcType=VARCHAR}
+    <if test="name != ''">
+      AND `name` = #{name,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <select id="selectEventClubNum" resultType="java.lang.Integer">
+    select
+           count(*)
+    from event_club
+    where event_id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="init" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from event
+    where status != "开赛失败"
+    AND status != "已开赛"
+  </select>
+  <select id="selectJoin" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from event
+    where status = "可参加"
+      AND `level` = #{group,jdbcType=VARCHAR}
+    <if test="name != ''">
+      AND name = #{name,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <insert id="insertEventClub" parameterType="java.lang.Long">
+    insert into event_club(`event_id`,`club_id`)
+    values (#{event,jdbcType=BIGINT}, #{club,jdbcType=BIGINT})
+  </insert>
+  <delete id="deleteEventClub" parameterType="java.lang.Long">
+    delete from event_club
+    where `event_id` = #{event,jdbcType=BIGINT}
+    AND `club_id` = #{club,jdbcType=BIGINT}
+  </delete>
+  <select id="selectEvent" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from event
+    where status = "已开赛"
+  </select>
+  <select id="selectEventIdByName" resultType="java.lang.Long">
+    select
+        id
+    from event
+    where name = #{event,jdbcType=VARCHAR}
+  </select>
 </mapper>

@@ -1,98 +1,118 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.MatchesMapper">
-  <resultMap id="BaseResultMap" type="com.example.entity.Matches">
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="time" jdbcType="DATE" property="time" />
-    <result column="home_team" jdbcType="VARCHAR" property="homeTeam" />
-    <result column="visiting_team" jdbcType="VARCHAR" property="visitingTeam" />
-    <result column="result" jdbcType="VARCHAR" property="result" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, `time`, home_team, visiting_team, `result`
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from matches
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from matches
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.example.entity.Matches" useGeneratedKeys="true">
-    insert into matches (`time`, home_team, visiting_team, 
-      `result`)
-    values (#{time,jdbcType=DATE}, #{homeTeam,jdbcType=VARCHAR}, #{visitingTeam,jdbcType=VARCHAR}, 
-      #{result,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.example.entity.Matches" useGeneratedKeys="true">
-    insert into matches
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="time != null">
-        `time`,
-      </if>
-      <if test="homeTeam != null">
-        home_team,
-      </if>
-      <if test="visitingTeam != null">
-        visiting_team,
-      </if>
-      <if test="result != null">
-        `result`,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="time != null">
-        #{time,jdbcType=DATE},
-      </if>
-      <if test="homeTeam != null">
-        #{homeTeam,jdbcType=VARCHAR},
-      </if>
-      <if test="visitingTeam != null">
-        #{visitingTeam,jdbcType=VARCHAR},
-      </if>
-      <if test="result != null">
-        #{result,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.example.entity.Matches">
-    update matches
-    <set>
-      <if test="time != null">
-        `time` = #{time,jdbcType=DATE},
-      </if>
-      <if test="homeTeam != null">
-        home_team = #{homeTeam,jdbcType=VARCHAR},
-      </if>
-      <if test="visitingTeam != null">
-        visiting_team = #{visitingTeam,jdbcType=VARCHAR},
-      </if>
-      <if test="result != null">
-        `result` = #{result,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.example.entity.Matches">
-    update matches
-    set `time` = #{time,jdbcType=DATE},
-      home_team = #{homeTeam,jdbcType=VARCHAR},
-      visiting_team = #{visitingTeam,jdbcType=VARCHAR},
-      `result` = #{result,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <select id="selectALL" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from matches
-  </select>
-  <select id="selectALLByTime" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from matches
-    where `time` = #{time,jdbcType=DATE}
-  </select>
+    <resultMap id="BaseResultMap" type="com.example.entity.Matches">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="time" jdbcType="DATE" property="time"/>
+        <result column="home_team" jdbcType="VARCHAR" property="homeTeam"/>
+        <result column="visiting_team" jdbcType="VARCHAR" property="visitingTeam"/>
+        <result column="result" jdbcType="VARCHAR" property="result"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , `time`, home_team, visiting_team, `result`
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from matches
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from matches
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.example.entity.Matches"
+            useGeneratedKeys="true">
+        insert into matches (`time`, home_team, visiting_team,
+                             `result`)
+        values (#{time,jdbcType=DATE}, #{homeTeam,jdbcType=VARCHAR}, #{visitingTeam,jdbcType=VARCHAR},
+                #{result,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.example.entity.Matches"
+            useGeneratedKeys="true">
+        insert into matches
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="time != null">
+                `time`,
+            </if>
+            <if test="homeTeam != null">
+                home_team,
+            </if>
+            <if test="visitingTeam != null">
+                visiting_team,
+            </if>
+            <if test="result != null">
+                `result`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="time != null">
+                #{time,jdbcType=DATE},
+            </if>
+            <if test="homeTeam != null">
+                #{homeTeam,jdbcType=VARCHAR},
+            </if>
+            <if test="visitingTeam != null">
+                #{visitingTeam,jdbcType=VARCHAR},
+            </if>
+            <if test="result != null">
+                #{result,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.example.entity.Matches">
+        update matches
+        <set>
+            <if test="time != null">
+                `time` = #{time,jdbcType=DATE},
+            </if>
+            <if test="homeTeam != null">
+                home_team = #{homeTeam,jdbcType=VARCHAR},
+            </if>
+            <if test="visitingTeam != null">
+                visiting_team = #{visitingTeam,jdbcType=VARCHAR},
+            </if>
+            <if test="result != null">
+                `result` = #{result,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.example.entity.Matches">
+        update matches
+        set `time`        = #{time,jdbcType=DATE},
+            home_team     = #{homeTeam,jdbcType=VARCHAR},
+            visiting_team = #{visitingTeam,jdbcType=VARCHAR},
+            `result`      = #{result,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <select id="selectALL" resultMap="BaseResultMap">
+        SELECT m.*,e.name
+        from event_matches em
+        LEFT JOIN matches m
+        on em.matches_id = m.id
+        LEFT JOIN `event` e
+        on em.event_id = e.id
+        <where>
+            <if test="club != ''">
+                m.home_team = #{club,jdbcType=VARCHAR}
+                OR m.visiting_team = #{club,jdbcType=VARCHAR}
+            </if>
+            <if test="name != ''">
+                AND e.name = #{name,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectALLByTime" resultMap="BaseResultMap">
+        SELECT m.*, e.name
+        from event_matches em
+                 LEFT JOIN matches m
+                           on em.matches_id = m.id
+                 LEFT JOIN `event` e
+                           on em.event_id = e.id
+        where m.`time` = #{time,jdbcType=DATE}
+    </select>
 </mapper>

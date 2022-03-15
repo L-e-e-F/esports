@@ -2,9 +2,6 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="pragma" content="no-cache" />
-    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
-    <meta http-equiv="expires" content="0" />
     <title>注册</title>
     <link rel="stylesheet" href="../css/base.css" />
     <link rel="stylesheet" href="../css/element.css" />
@@ -129,11 +126,12 @@
           value: "",
         },
         created() {
+          this.getUser();
           this.Roletype();
-          if (null != sessionStorage.getItem("user")) {
-            alert("你好，您已登录请返回主页");
-            location.href = "/Index";
-          }
+          // if (null != sessionStorage.getItem("user")) {
+          //   alert("你好，您已登录请返回主页");
+          //   location.href = "/Index";
+          // }
         },
         methods: {
           register() {
@@ -172,7 +170,7 @@
                   type: "success",
                 });
                 setTimeout(() => {
-                  location.href = "/front/login.html";
+                  window.location.replace("/login");
                 }, 1000);
               } else {
                 this.$message({
@@ -188,6 +186,22 @@
               type: "GET",
             }).then((res) => {
               this.role = res;
+            });
+          },
+          getUser() {
+            $.get("/user/LoginUser").then((res) => {
+              if (res.code === 0) {
+                this.user = res.data;
+                $.get("/menu/url?role=" + this.user.role).then((res) => {
+                  this.menu = res.data;
+                });
+                // $.get("/role/getRole?id=" + this.user.role).then((res) => {
+                //     this.user.role = res;
+                // });
+              } else {
+                alert(res.message);
+                window.location.replace("/login");
+              }
             });
           },
         },

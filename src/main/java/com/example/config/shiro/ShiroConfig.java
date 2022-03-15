@@ -62,8 +62,12 @@ public class ShiroConfig {
         filterMap.put("/register","anon");
         filterMap.put("/user/login","anon");
         filterMap.put("/user/register","anon");
-        filterMap.put("/logout","logout");
-        filterMap.put("/{page}","authc");
+        filterMap.put("/user/logout","anon");
+//        filterMap.put("/{page}","authc");
+
+        filterMap.put("/club/set/**","roles[ROLE_ADMIN]");
+        filterMap.put("/club/all","authc");
+
 //        filterMap.put("/front/**","anon");
 //        //授权的url
 //        filterMap.put("/end/**","authc");

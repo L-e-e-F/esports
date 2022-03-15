@@ -19,7 +19,7 @@ public interface MatchesMapper {
 
     int updateByPrimaryKey(Matches record);
 
-    Page<Matches> selectALL();
+    Page<Matches> selectALL(String club,String name);
 
     Page<Matches> selectALLByTime(Date time);
 }

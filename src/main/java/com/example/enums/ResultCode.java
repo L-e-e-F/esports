@@ -14,8 +14,11 @@ public enum ResultCode {
     EMPTY_FILE(-1,"未选择文件"),
     EMPTY_MATCHES(-1,"今日无比赛"),
     ERROR_MATCHES(-1,"获取比赛列表失败"),
+    ERROR_PLAYER(-1,"获取选手列表失败"),
+    ERROR_EVENT(-1,"获取赛事列表失败"),
     ERROR_CLUB(-1,"获取俱乐部列表失败"),
-    MENU_EMPTY(-1,"用户菜单获取失败");
+    MENU_EMPTY(-1,"用户菜单获取失败"),
+    Unauthorized(-1,"权限不足");
 
 
 

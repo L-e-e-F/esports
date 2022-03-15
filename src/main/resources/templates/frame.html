@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="pragma" content="no-cache" />
-    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
-    <meta http-equiv="expires" content="0" />
     <title>后台管理</title>
     <link rel="stylesheet" href="../css/element.css" />
     <link rel="stylesheet" href="../css/base.css" />
     <link rel="icon" href="../images/favicon.ico" type="image/x-icon" />
+<!--    <link rel="shortcut icon" href="../resources/favicon.ico" th:href="@{/static/favicon.ico}"/>-->
+
     <style></style>
 </head>
 <body>
@@ -138,7 +137,12 @@
         },
         created() {
             this.getUser()
-            this.src = sessionStorage.getItem("src")
+            if(sessionStorage.getItem("src") != null){
+                this.src = sessionStorage.getItem("src")
+            }
+            else{
+                this.src = "index"
+            }
             this.handleSelect(this.src)
         },
         mounted(){
@@ -147,34 +151,31 @@
             handleSelect(key) {
                 this.getUser()
                 console.log(this.menu)
-                key = this.menu ? key :"index"
-                sessionStorage.setItem("src", key);
-                if('person' !== key){
-                    this.src = key;
-                    console.log(this.src);
-                    let url = location.pathname + '?target=' +  key
-                    history.pushState({url: url, title: document.title}, document.title, url);
-                    window.setInterval("reinitIframe()", 50);
-                }else{
-                    this.src = this.user.role + 'setting'
-                    let url = location.pathname + '?target=' +  this.src
-                    history.pushState({url: url, title: document.title}, document.title, url);
-                    window.setInterval("reinitIframe()", 50);
+                if(key !== "index"){
+                    key = this.menu ? key :"index"
                 }
+                this.src = key;
+                if(sessionStorage.getItem("src") === key){
+                    document.getElementById('myiframe').contentWindow.location.reload();
+                }
+                sessionStorage.setItem("src", key);
+                console.log(this.src);
+                let url = location.pathname + '?target=' +  key
+                history.pushState({url: url, title: document.title}, document.title, url);
+                window.setInterval("reinitIframe()", 50);
             },
             handleCollapse() {
                 this.isCollapse = !this.isCollapse;
             },
             logout() {
-                $.get("/logout");
-                location.href = "/login";
+                $.get("/user/logout");
+                window.location.replace("/login");
                 localStorage.removeItem("src");
             },
             getUser() {
                 $.get("/user/LoginUser").then((res) => {
                     if (res.code === 0) {
                         this.user = res.data;
-
                         $.get("/menu/url?role=" + this.user.role).then((res) => {
                             this.menu = res.data;
                         });

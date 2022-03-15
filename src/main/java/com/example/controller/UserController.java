@@ -10,12 +10,9 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.apache.shiro.web.util.SavedRequest;
-import org.apache.shiro.web.util.WebUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/user")
@@ -35,7 +32,7 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public Result<?> login(@RequestBody User user, HttpServletRequest request){
+    public Result<?> login(@RequestBody User user){
         Subject subject = SecurityUtils.getSubject();
         AuthenticationToken token = new UsernamePasswordToken(user.getName(), user.getPassword());
         try{
@@ -48,20 +45,8 @@ public class UserController {
             e.printStackTrace();
             return Result.ErrorResult(e.getMessage());
         }
-//        LoginUser loginuser = new LoginUser();
-//        User u = (User) SecurityUtils.getSubject().getPrincipal();
-//        loginuser.setNickName(u.getNickName());
-//        loginuser.setRole(u.getRole());
-        SavedRequest savedRequest=WebUtils.getSavedRequest(request);
-        if(null != savedRequest){
-//            loginuser.setUrl(WebUtils.getSavedRequest(request).getRequestUrl());
-            return Result.SuccessResult(WebUtils.getSavedRequest(request).getRequestUrl());
-        }
-        else{
 //            loginuser.setUrl("/frame");
             return Result.SuccessResult("/frame");
-        }
-//        return Result.SuccessResult(loginuser);
     }
 
     @PostMapping("/register")
@@ -73,7 +58,9 @@ public class UserController {
 
     @GetMapping("/LoginUser")
     public Result<?> LoginUser(){
+//        Subject subject = SecurityUtils.getSubject();
         User Loginuser = (User) SecurityUtils.getSubject().getPrincipal();
+//        System.out.println(subject);
         if(null != Loginuser){
             User u = new User();
             u.setNickName(Loginuser.getNickName());
@@ -82,6 +69,12 @@ public class UserController {
             return Result.SuccessResult(u);
         }
         return Result.ErrorResult(ResultCode.USER_NOT_LOGIN);
+    }
+
+    @GetMapping("/logout")
+    public void logout(){
+        Subject subject = SecurityUtils.getSubject();
+        subject.logout();
     }
 
 }

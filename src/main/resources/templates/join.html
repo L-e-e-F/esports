@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>赛事管理</title>
-    <link rel="stylesheet" href="../css/element.css" />
-    <link rel="stylesheet" href="../css/base.css" />
+    <meta charset="UTF-8"/>
+    <title>参赛管理</title>
+    <link rel="stylesheet" href="../css/element.css"/>
+    <link rel="stylesheet" href="../css/base.css"/>
 </head>
 <body>
 <div id="wrapper" v-cloak>
@@ -18,10 +18,8 @@
                         placeholder="请输入赛事名搜索"
                 ></el-input>
                 <el-button @click="loadTable" type="primary" style="margin: 5px 0"
-                >查询</el-button
-                >
-                <el-button @click="add" type="primary" style="margin: 5px 0"
-                >新增</el-button
+                >查询
+                </el-button
                 >
             </div>
             <el-table :data="tableData" border style="width: 100%">
@@ -37,21 +35,10 @@
                     <template slot-scope="scope">
                         <el-button
                                 type="primary"
-                                @click="edit(scope.row)"
+                                @click="edit(scope.row.id)"
                                 icon="el-icon-edit"
                                 circle
                         ></el-button>
-                        <el-popconfirm
-                                @onConfirm="del(scope.row.id)"
-                                title="确定删除？"
-                        >
-                            <el-button
-                                    type="danger"
-                                    icon="el-icon-delete"
-                                    circle
-                                    slot="reference"
-                            ></el-button>
-                        </el-popconfirm>
                     </template>
                 </el-table-column>
             </el-table>
@@ -77,10 +64,8 @@
                         placeholder="请输入赛事名搜索"
                 ></el-input>
                 <el-button @click="loadTable" type="primary" style="margin: 5px 0"
-                >查询</el-button
-                >
-                <el-button @click="add" type="primary" style="margin: 5px 0"
-                >新增</el-button
+                >查询
+                </el-button
                 >
             </div>
             <el-table :data="tableData" border style="width: 100%">
@@ -96,21 +81,10 @@
                     <template slot-scope="scope">
                         <el-button
                                 type="primary"
-                                @click="edit(scope.row)"
+                                @click="edit(scope.row.id)"
                                 icon="el-icon-edit"
                                 circle
                         ></el-button>
-                        <el-popconfirm
-                                @onConfirm="del(scope.row.id)"
-                                title="确定删除？"
-                        >
-                            <el-button
-                                    type="danger"
-                                    icon="el-icon-delete"
-                                    circle
-                                    slot="reference"
-                            ></el-button>
-                        </el-popconfirm>
                     </template>
                 </el-table-column>
             </el-table>
@@ -128,36 +102,68 @@
             </div>
         </el-tab-pane>
     </el-tabs>
-    <!-- <div v-else>
-    <h1 style="text-align: center">暂无俱乐部</h1>
-  </div> -->
-    <el-dialog title="赛事信息" :visible.sync="dialogFormVisible" width="40%"
+    <el-dialog title="已选俱乐部" :visible.sync="dialogFormVisible" width="50%"
                :close-on-click-modal="false">
-        <el-form :model="entity">
-            <el-form-item label="赛事级别" label-width="100px">
-                <el-input
-                        v-model="entity.level"
-                        :disabled="true"
-                        style="width: 80%">
-                </el-input>
-            </el-form-item>
-            <el-form-item label="赛事名" label-width="100px">
-                <el-input v-model="entity.name" autocomplete="off" style="width: 80%"></el-input>
-            </el-form-item>
-            <el-form-item label="开始时间" label-width="100px">
-                <el-date-picker clearable style="width: 80%" v-model="entity.time" type="date" value-format="yyyy-MM-dd" placeholder="选择日期时间"></el-date-picker>
-            </el-form-item>
-            <el-form-item label="俱乐部数量" label-width="100px">
-                <el-input v-model="entity.clubum" autocomplete="off" style="width: 80%"></el-input>
-            </el-form-item>
-            <el-form-item v-if="entity.status === '等待开赛'" label="开赛" label-width="100px">
-                <el-button size="small" type="primary" @click="start(entity.name)" >点击开赛</el-button>
-            </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="save">确 定</el-button>
-        </div>
+        <el-button @click="select" type="primary" style="margin-bottom: 5px"
+        >新增
+        </el-button
+        >
+        <el-table :data="joinclub" border style="width: 100%" max-height="300">
+            <el-table-column prop="clubImg" label="队标">
+                <template slot-scope="scope">
+                    <div style="background-color: #303133; vertical-align: middle">
+                        <img
+                                :src="scope.row.clubImg"
+                                style="width: 30%; height: 30%; margin: 0 35%"
+                        />
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="clubName" label="俱乐部名"></el-table-column>
+            <el-table-column prop="clubCoach" label="俱乐部教练"></el-table-column>
+            <el-table-column fixed="right" label="操作" width="150">
+                <template slot-scope="scope">
+                    <el-popconfirm
+                            @onConfirm="del(scope.row.clubId)"
+                            title="确定删除？"
+                    >
+                        <el-button
+                                type="danger"
+                                icon="el-icon-delete"
+                                circle
+                                slot="reference"
+                        ></el-button>
+                    </el-popconfirm>
+                </template>
+            </el-table-column>
+        </el-table>
+    </el-dialog>
+    <el-dialog title="可选俱乐部" :visible.sync="dialogSelect" width="40%"
+               :close-on-click-modal="false">
+        <el-table :data="selected" border style="width: 100%" max-height="300">
+            <el-table-column prop="clubImg" label="队标">
+                <template slot-scope="scope">
+                    <div style="background-color: #303133; vertical-align: middle">
+                        <img
+                                :src="scope.row.clubImg"
+                                style="width: 30%; height: 30%; margin: 0 35%"
+                        />
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="clubName" label="俱乐部名"></el-table-column>
+            <el-table-column prop="clubCoach" label="俱乐部教练"></el-table-column>
+            <el-table-column fixed="right" label="操作" width="150">
+                <template slot-scope="scope">
+                    <el-button
+                            type="primary"
+                            @click="add(scope.row.clubId)"
+                            icon="el-icon-plus"
+                            circle
+                    ></el-button>
+                </template>
+            </el-table-column>
+        </el-table>
     </el-dialog>
 </div>
 <script src="../js/jquery.min.js"></script>
@@ -169,23 +175,28 @@
         el: "#wrapper",
         data: {
             tableData: [],
-            entity: {},
+            joinclub: [],
+            selected: [],
+            event: 0,
             pageNum: 1,
-            pageSize: 10,
+            pageSize: 4,
             total: 0,
             group: "Major",
+            clubGroup: "S",
             search: '',
             dialogFormVisible: false,
+            dialogSelect: false,
+            pageNo: 4,
+
         },
         created() {
             this.loadTable();
         },
         methods: {
             loadTable() {
-                console.log(typeof (this.search))
-                if(!this.search){
+                if (!this.search) {
                     $.get(
-                        "/event/all?pageNum=" +
+                        "/event/join?pageNum=" +
                         this.pageNum +
                         "&pageSize=" +
                         this.pageSize +
@@ -201,9 +212,9 @@
                             this.total = 0;
                         }
                     });
-                }else{
+                } else {
                     $.get(
-                        "/event/all?pageNum=" +
+                        "/event/join?pageNum=" +
                         this.pageNum +
                         "&pageSize=" +
                         this.pageSize +
@@ -212,13 +223,13 @@
                         "&name=" +
                         this.search
                     ).then((res) => {
-                        if(res.code === 0){
+                        if (res.code === 0) {
                             this.tableData = res.data.list;
                             this.total = res.data.total;
                             console.log(this.total)
-                        }else{
-                            this.tableData = null;
-                            this.total = null;
+                        } else {
+                            this.tableData = [];
+                            this.total = 0;
                         }
                     });
                 }
@@ -233,63 +244,43 @@
             },
             handleClick(tabs) {
                 this.group = tabs.name;
+                if(this.group === "Major"){
+                    this.clubGroup = "S"
+                }else{
+                    this.clubGroup = "A"
+                }
                 this.search = null;
                 this.loadTable();
             },
-            add() {
-                this.entity = {}
-                this.entity.level = this.group;
-                this.dialogFormVisible = true;
-            },
-            edit(obj){
-                console.log(obj)
-                this.entity = JSON.parse(JSON.stringify(obj));
-                this.dialogFormVisible = true;
-            },
-            start(obj){
-                // $.post("/event/AddMatches?EventName=" +
-                //     obj)
-                console.log(obj)
-                $.ajax({
-                    url: "/event/AddMatches?EventName=" + obj,
-                    type: 'POST'
-                }).then((res)=>{
-                    if(res.code === 0){
-                        this.$message({
-                            message: "开赛成功",
-                            type: "success"
-                        });
-                        this.loadTable();
-                    }else {
-                        if(res.message === "未知异常"){
-                            this.$message({
-                                message: "权限不足",
-                                type: "error"
-                            })
-                        }else{
-                            this.$message({
-                                message: res.message,
-                                type: "error"
-                            })
-                        }
+            edit(obj) {
+                this.event = obj
+                $.get(
+                    "/club/eventclub/" +
+                    obj
+                ).then((res) => {
+                    if (res.code === 0) {
+                        this.joinclub = res.data;
+                    } else {
+                        this.joinclub = [];
                     }
-                })
-                this.dialogFormVisible = false;
-
+                });
+                this.dialogFormVisible = true;
             },
-            del(obj){
+            del(obj) {
                 console.log(obj)
                 $.ajax({
-                    url: "/event/set/" + obj,
+                    url: "/event/eventclub?eventid=" +
+                        this.event +
+                        "&clubid=" +
+                        obj,
                     type: 'DELETE',
-                    contentType: "application/json"
                 }).then((res) => {
                     if(res.code === 0){
                         this.$message({
                             message: "删除成功",
                             type: "success"
                         });
-                        this.loadTable();
+                        this.edit(this.event);
                     }else {
                         if(res.message === "未知异常"){
                             this.$message({
@@ -305,35 +296,14 @@
                     }
                 })
             },
-            save(){
-                console.log(this.entity)
-                if (!this.entity.name) {
-                    this.$message({
-                        message: "请填写赛事名",
-                        type: "warning"
-                    })
-                    return;
-                }
-                if (!this.entity.time) {
-                    this.$message({
-                        message: "请填写赛事时间",
-                        type: "warning"
-                    })
-                    return;
-                }
-                if (!this.entity.clubum || this.entity.clubum < 2) {
-                    this.$message({
-                        message: "请规范填写俱乐部数量，不能小于两个",
-                        type: "warning"
-                    })
-                    return;
-                }
-                let type = this.entity.id ? "PUT" : "POST";
+            add(obj) {
+                console.log(obj,this.event)
                 $.ajax({
-                    url: "/event/set/",
-                    type: type,
-                    contentType: "application/json",
-                    data: JSON.stringify(this.entity)
+                    url: "/event/eventclub?eventid=" +
+                            this.event +
+                            "&clubid=" +
+                            obj,
+                    type: 'PUT',
                 }).then((res) => {
                     if(typeof(res.code) === "undefined"){
                         this.$message({
@@ -346,15 +316,39 @@
                             message: "保存成功",
                             type: "success"
                         });
-                        this.loadTable();
                     } else {
                         this.$message({
                             message: res.message,
                             type: "error"
                         })
                     }
+                    this.dialogSelect = false;
                     this.dialogFormVisible = false;
+                    this.loadTable();
                 })
+            },
+            select() {
+                this.dialogSelect = true;
+                $.get(
+                    "/club/ALL?group=" +
+                    this.clubGroup
+                ).then((res) => {
+                    if (res.code === 0) {
+                        this.selected = this.RemoveSameItem(this.joinclub,res.data)
+                    } else {
+                        this.selected = [];
+                    }
+                })
+            },
+            RemoveSameItem(listOne, listTwo) {
+                for( let c1 in listOne ){
+                    for(let c2 in listTwo){
+                        if(listOne[c1].clubId === listTwo[c2].clubId){
+                            listTwo.splice(c2,1)
+                        }
+                    }
+                }
+                    return listTwo;
             }
         },
     });
