@@ -22,7 +22,11 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<Role> getAllUserType() {
-        System.out.println("1"+roleMapper.getAllUserType());
         return roleMapper.getAllUserType();
+    }
+
+    @Override
+    public List<Role> getAll() {
+        return roleMapper.getAll();
     }
 }

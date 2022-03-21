@@ -25,4 +25,6 @@ public interface ClubMapper {
     List<Club> ALL(String group);
 
     void updateClubPoints (String club);
+
+    Page<Club> follow(Long user,String club);
 }

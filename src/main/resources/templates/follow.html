@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>比赛管理</title>
+    <link rel="stylesheet" href="../css/element.css"/>
+    <link rel="stylesheet" href="../css/base.css"/>
+</head>
+<body>
+<div id="wrapper" v-cloak>
+    <el-tabs v-model="group" @tab-click="handleClick" stretch>
+        <el-tab-pane label="关注列表" name="follow">
+            <div>
+                <el-input
+                        v-model="search"
+                        style="width: 20%"
+                        suffix-icon="el-icon-search"
+                        placeholder="请输入战队名搜索"
+                ></el-input>
+                <el-button @click="loadTable" type="primary" style="margin: 5px 0"
+                >查询
+                </el-button
+                >
+            </div>
+            <el-table :data="tableData" border style="width: 100%">
+                <el-table-column prop="clubImg" label="队标">
+                    <template slot-scope="scope">
+                        <div style="background-color: #303133; vertical-align: middle">
+                            <img
+                                    :src="scope.row.clubImg"
+                                    style="width: 30%; height: 30%; margin: 0 35%"
+                            />
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="clubName" label="俱乐部名"></el-table-column>
+                <el-table-column prop="clubCoach" label="俱乐部教练"></el-table-column>
+                <el-table-column
+                        prop="clubPoints"
+                        label="积分"
+                        sortable
+                ></el-table-column>
+                <el-table-column fixed="right" label="操作" width="150">
+                    <template slot-scope="scope">
+                        <el-button
+                                type="primary"
+                                @click="follow(scope.row.clubId)"
+                                icon="el-icon-error"
+                                circle
+                        ></el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <!-- 分页 -->
+            <div style="background-color: white; padding: 10px 0">
+                <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="pageNum"
+                        :page-size="pageSize"
+                        layout="total, prev, pager, next, jumper"
+                        :total="total"
+                >
+                </el-pagination>
+            </div>
+        </el-tab-pane>
+        <el-tab-pane label="俱乐部比赛" name="matches">
+            <div>
+                <el-input
+                        v-model="searchClub"
+                        style="width: 20%"
+                        suffix-icon="el-icon-search"
+                        placeholder="请输入俱乐部名搜索"
+                ></el-input>
+                <el-input
+                        v-model="searchName"
+                        style="width: 20%"
+                        suffix-icon="el-icon-search"
+                        placeholder="请输入赛事名搜索"
+                ></el-input>
+                <el-button @click="loadTable" type="primary" style="margin: 5px 0"
+                >查询
+                </el-button
+                >
+            </div>
+            <el-table :data="tableData" border style="width: 100%">
+                <el-table-column
+                        prop="time"
+                        label="时间"
+                        width="120"
+                        sortable
+                ></el-table-column>
+                <el-table-column prop="homeTeam" label="主队"></el-table-column>
+                <el-table-column prop="visitingTeam" label="客队"></el-table-column>
+                <el-table-column prop="name" label="赛事名"></el-table-column>
+                <el-table-column prop="result" label="结果"></el-table-column>
+            </el-table>
+            <!-- 分页 -->
+            <div style="background-color: white; padding: 10px 0">
+                <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="pageNum"
+                        :page-size="pageSize"
+                        layout="total, prev, pager, next, jumper"
+                        :total="total"
+                >
+                </el-pagination>
+            </div>
+        </el-tab-pane>
+    </el-tabs>
+</div>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/vue.js"></script>
+<script src="../js/element.js"></script>
+
+<script>
+    let vm = new Vue({
+        el: "#wrapper",
+        data: {
+            tableData: [],
+            pageNum: 1,
+            pageSize: 10,
+            total: 0,
+            group: "follow",
+            searchClub: '',
+            searchName: '',
+            search: '',
+        },
+        created() {
+            this.loadTable();
+        },
+        methods: {
+            loadTable() {
+                if(this.group === "follow"){
+                    if (!this.search) {
+                        $.get(
+                            "/club/follow?pageNum=" +
+                            this.pageNum +
+                            "&pageSize=" +
+                            this.pageSize
+                        ).then((res) => {
+                            if (res.code === 0) {
+                                this.tableData = res.data.list;
+                                this.total = res.data.total;
+                                console.log(this.total)
+                            } else {
+                                this.tableData = [];
+                                this.total = 0;
+                            }
+                        });
+                    } else {
+                        $.get(
+                            "/club/follow?pageNum=" +
+                            this.pageNum +
+                            "&pageSize=" +
+                            this.pageSize +
+                            "&club=" +
+                            this.search
+                        ).then((res) => {
+                            if (res.code === 0) {
+                                this.tableData = res.data.list;
+                                this.total = res.data.total;
+                                console.log(this.total)
+                            } else {
+                                this.tableData = [];
+                                this.total = 0;
+                            }
+                        });
+                    }
+                }
+                if(this.group === "matches"){
+                    if (!this.searchClub && !this.searchName) {
+                        $.get(
+                            "/matches/follow?pageNum=" +
+                            this.pageNum +
+                            "&pageSize=" +
+                            this.pageSize
+                        ).then((res) => {
+                            if (res.code === 0) {
+                                this.tableData = res.data.list;
+                                this.total = res.data.total;
+                                console.log(this.total)
+                            } else {
+                                this.tableData = [];
+                                this.total = 0;
+                            }
+                        });
+                    } else {
+                        $.get(
+                            "/matches/follow?pageNum=" +
+                            this.pageNum +
+                            "&pageSize=" +
+                            this.pageSize +
+                            "&club=" +
+                            this.searchClub +
+                            "&name=" +
+                            this.searchName
+                        ).then((res) => {
+                            if (res.code === 0) {
+                                this.tableData = res.data.list;
+                                this.total = res.data.total;
+                                console.log(this.total)
+                            } else {
+                                this.tableData = [];
+                                this.total = 0;
+                            }
+                        });
+                    }
+                    if (this.searchClub) {
+                        $.get(
+                            "/matches/follow?pageNum=" +
+                            this.pageNum +
+                            "&pageSize=" +
+                            this.pageSize +
+                            "&club=" +
+                            this.searchClub
+                        ).then((res) => {
+                            if (res.code === 0) {
+                                this.tableData = res.data.list;
+                                this.total = res.data.total;
+                                console.log(this.total)
+                            } else {
+                                this.tableData = [];
+                                this.total = 0;
+                            }
+                        });
+                    }
+                    if (this.searchName) {
+                        $.get(
+                            "/matches/follow?pageNum=" +
+                            this.pageNum +
+                            "&pageSize=" +
+                            this.pageSize +
+                            "&name=" +
+                            this.searchName
+                        ).then((res) => {
+                            if (res.code === 0) {
+                                this.tableData = res.data.list;
+                                this.total = res.data.total;
+                                console.log(this.total)
+                            } else {
+                                this.tableData = [];
+                                this.total = 0;
+                            }
+                        });
+                    }
+                }
+            },
+            handleSizeChange(pageSize) {
+                this.pageSize = pageSize;
+                this.loadTable();
+            },
+            handleCurrentChange(pageNum) {
+                this.pageNum = pageNum;
+                this.loadTable();
+            },
+            handleClick(tabs) {
+                this.group = tabs.name;
+                this.search = null;
+                this.searchClub = null;
+                this.searchName = null;
+                this.loadTable();
+            },
+            follow(obj){
+                console.log(obj)
+                $.ajax({
+                    url: "/user/follow?club=" + obj,
+                    type: 'DELETE',
+                }).then((res) => {
+                    if (res.code === 0) {
+                        this.$message({
+                            message: "取关成功",
+                            type: "success"
+                        });
+                        this.loadTable();
+                    } else {
+                        this.$message({
+                            message: res.message,
+                            type: "error"
+                        })
+                    }
+                })
+            }
+        },
+    })
+</script>
+</body>
+</html>

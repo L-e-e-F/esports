@@ -50,4 +50,9 @@ public class ClubServiceImp implements ClubService {
         clubMapper.updateClubPoints(club);
     }
 
+    @Override
+    public Page<Club> follow(Long user, String club) {
+        return clubMapper.follow(user,club);
+    }
+
 }

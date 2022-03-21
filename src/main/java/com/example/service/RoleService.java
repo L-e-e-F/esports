@@ -9,4 +9,6 @@ public interface RoleService {
     String selectByPrimaryKey(Long id);
 
     List<Role> getAllUserType();
+
+    List<Role> getAll();
 }

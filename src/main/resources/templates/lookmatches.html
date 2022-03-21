@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>查看比赛</title>
+    <link rel="stylesheet" href="../css/element.css"/>
+    <link rel="stylesheet" href="../css/base.css"/>
+</head>
+<body>
+<div id="wrapper" v-cloak>
+    <div>
+        <el-input
+                v-model="searchClub"
+                style="width: 20%"
+                suffix-icon="el-icon-search"
+                placeholder="请输入俱乐部名搜索"
+        ></el-input>
+        <el-input
+                v-model="searchName"
+                style="width: 20%"
+                suffix-icon="el-icon-search"
+                placeholder="请输入赛事名搜索"
+        ></el-input>
+        <el-button @click="loadTable" type="primary" style="margin: 5px 0"
+        >查询
+        </el-button
+        >
+    </div>
+    <el-table :data="tableData" border style="width: 100%">
+        <el-table-column
+                prop="time"
+                label="时间"
+                width="120"
+                sortable
+        ></el-table-column>
+        <el-table-column prop="homeTeam" label="主队"></el-table-column>
+        <el-table-column prop="visitingTeam" label="客队"></el-table-column>
+        <el-table-column prop="name" label="赛事名"></el-table-column>
+        <el-table-column prop="result" label="结果"></el-table-column>
+    </el-table>
+    <!-- 分页 -->
+    <div style="background-color: white; padding: 10px 0">
+        <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="pageNum"
+                :page-size="pageSize"
+                layout="total, prev, pager, next, jumper"
+                :total="total"
+        >
+        </el-pagination>
+    </div>
+</div>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/vue.js"></script>
+<script src="../js/element.js"></script>
+
+<script>
+    let vm = new Vue({
+        el: "#wrapper",
+        data: {
+            tableData: [],
+            pageNum: 1,
+            pageSize: 10,
+            total: 0,
+            group: "Major",
+            searchClub: '',
+            searchName: '',
+        },
+        created() {
+            this.loadTable();
+        },
+        methods: {
+            loadTable() {
+                if (!this.searchClub && !this.searchName) {
+                    $.get(
+                        "/matches/all?pageNum=" +
+                        this.pageNum +
+                        "&pageSize=" +
+                        this.pageSize
+                    ).then((res) => {
+                        if (res.code === 0) {
+                            this.tableData = res.data.list;
+                            this.total = res.data.total;
+                            console.log(this.total)
+                        } else {
+                            this.tableData = [];
+                            this.total = 0;
+                        }
+                    });
+                } else {
+                    $.get(
+                        "/matches/all?pageNum=" +
+                        this.pageNum +
+                        "&pageSize=" +
+                        this.pageSize +
+                        "&club=" +
+                        this.searchClub +
+                        "&name=" +
+                        this.searchName
+                    ).then((res) => {
+                        if (res.code === 0) {
+                            this.tableData = res.data.list;
+                            this.total = res.data.total;
+                            console.log(this.total)
+                        } else {
+                            this.tableData = [];
+                            this.total = 0;
+                        }
+                    });
+                }
+                if (this.searchClub) {
+                    $.get(
+                        "/matches/all?pageNum=" +
+                        this.pageNum +
+                        "&pageSize=" +
+                        this.pageSize +
+                        "&club=" +
+                        this.searchClub
+                    ).then((res) => {
+                        if (res.code === 0) {
+                            this.tableData = res.data.list;
+                            this.total = res.data.total;
+                            console.log(this.total)
+                        } else {
+                            this.tableData = [];
+                            this.total = 0;
+                        }
+                    });
+                }
+                if (this.searchName) {
+                    $.get(
+                        "/matches/all?pageNum=" +
+                        this.pageNum +
+                        "&pageSize=" +
+                        this.pageSize +
+                        "&name=" +
+                        this.searchName
+                    ).then((res) => {
+                        if (res.code === 0) {
+                            this.tableData = res.data.list;
+                            this.total = res.data.total;
+                            console.log(this.total)
+                        } else {
+                            this.tableData = [];
+                            this.total = 0;
+                        }
+                    });
+                }
+            },
+            handleSizeChange(pageSize) {
+                this.pageSize = pageSize;
+                this.loadTable();
+            },
+            handleCurrentChange(pageNum) {
+                this.pageNum = pageNum;
+                this.loadTable();
+            },
+        },
+    })
+</script>
+</body>
+</html>

@@ -2,10 +2,12 @@ package com.example.controller;
 
 import com.example.common.Result;
 import com.example.entity.Club;
+import com.example.entity.User;
 import com.example.enums.ResultCode;
 import com.example.service.ClubService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +28,17 @@ public class ClubController {
                                @RequestParam(required = false, defaultValue = "") String name) {
         PageHelper.startPage(pageNum, pageSize);
         PageInfo page =  new PageInfo(clubService.selectALL(group,name));
+        if (page.getTotal() == 0) return Result.ErrorResult(ResultCode.ERROR_CLUB);
+        return Result.SuccessResult(page);
+    }
+
+    @GetMapping("/follow")
+    public Result<?> follow(@RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                               @RequestParam(required = false, defaultValue = "4") Integer pageSize,
+                               @RequestParam(required = false, defaultValue = "") String club) {
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        PageHelper.startPage(pageNum, pageSize);
+        PageInfo page =  new PageInfo(clubService.follow(user.getUserId(),club));
         if (page.getTotal() == 0) return Result.ErrorResult(ResultCode.ERROR_CLUB);
         return Result.SuccessResult(page);
     }

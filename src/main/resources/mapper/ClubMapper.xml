@@ -130,4 +130,16 @@
         set club_points = club_points + 1
         where club_name = #{club,jdbcType=VARCHAR}
     </update>
+    <select id="follow" resultMap="BaseResultMap">
+        select c.*
+        from follow f
+            LEFT JOIN club c
+                on f.club_id = c.club_id
+            LEFT JOIN all_user au
+                on au.user_id = f.user_id
+        where au.user_id = #{user,jdbcType=BIGINT}
+        <if test="club != ''">
+            and c.club_name = #{club,jdbcType=VARCHAR}
+        </if>
+    </select>
 </mapper>

@@ -160,7 +160,6 @@
             pageNum: 1,
             pageSize: 10,
             total: 0,
-            group: "Major",
             searchClub: '',
             searchName: '',
             dialogFormVisible: false,
@@ -184,7 +183,7 @@
         },
         methods: {
             loadTable() {
-                if (!this.searchClub) {
+                if (!this.searchClub && !this.searchName) {
                     $.get(
                         "/matches/all?pageNum=" +
                         this.pageNum +
@@ -294,7 +293,7 @@
                 ).then((res) => {
                     this.club = res.data;
                 })
-                this.entity = obj
+                this.entity = JSON.parse(JSON.stringify(obj));
                 this.dialogFormVisible = true;
             },
             del(obj) {

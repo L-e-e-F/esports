@@ -12,6 +12,6 @@ public class MD5 {
     }
 
     public static void main(String[] args) {
-        System.out.println(SysMd5("123","123456"));
+        System.out.println(SysMd5("LEEF","123456"));
     }
 }

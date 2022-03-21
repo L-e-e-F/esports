@@ -1,111 +1,134 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.UserMapper">
-  <resultMap id="BaseResultMap" type="com.example.entity.User">
-    <id column="user_id" jdbcType="BIGINT" property="userId" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="role" jdbcType="BIGINT" property="role" />
-    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    user_id, `name`, `password`, `role`, nick_name
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from all_user
-    where user_id = #{userId,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from all_user
-    where user_id = #{userId,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" keyColumn="user_id" keyProperty="userId" parameterType="com.example.entity.User" useGeneratedKeys="true">
-    insert into all_user (`name`, `password`, `role`, 
-      nick_name)
-    values (#{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{role,jdbcType=BIGINT}, 
-      #{nickName,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" keyColumn="user_id" keyProperty="userId" parameterType="com.example.entity.User" useGeneratedKeys="true">
-    insert into all_user
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="name != null">
-        `name`,
-      </if>
-      <if test="password != null">
-        `password`,
-      </if>
-      <if test="role != null">
-        `role`,
-      </if>
-      <if test="nickName != null">
-        nick_name,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="role != null">
-        #{role,jdbcType=BIGINT},
-      </if>
-      <if test="nickName != null">
-        #{nickName,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.example.entity.User">
-    update all_user
-    <set>
-      <if test="name != null">
-        `name` = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        `password` = #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="role != null">
-        `role` = #{role,jdbcType=BIGINT},
-      </if>
-      <if test="nickName != null">
-        nick_name = #{nickName,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where user_id = #{userId,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.example.entity.User">
-    update all_user
-    set `name` = #{name,jdbcType=VARCHAR},
-      `password` = #{password,jdbcType=VARCHAR},
-      `role` = #{role,jdbcType=BIGINT},
-      nick_name = #{nickName,jdbcType=VARCHAR}
-    where user_id = #{userId,jdbcType=BIGINT}
-  </update>
-  <select id="selectAll" resultType="com.example.entity.User">
-    select
-    <include refid="Base_Column_List" />
-    from all_user
-    order by user_id asc
-  </select>
-  <select id="login" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from all_user
-    where BINARY `name` = #{name,jdbcType=VARCHAR} AND `password` = #{password,jdbcType=VARCHAR}
-  </select>
-  <select id="getUserByName" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from all_user
-    where BINARY `name` = #{name,jdbcType=VARCHAR}
-  </select>
-  <select id="getNickNameByName" resultType="java.lang.String">
-    select
-    nick_name
-    from all_user
-    where BINARY `name` = #{name,jdbcType=VARCHAR}
-  </select>
+    <resultMap id="BaseResultMap" type="com.example.entity.User">
+        <id column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="role" jdbcType="BIGINT" property="role"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        user_id
+        , `name`, `password`, `role`, nick_name
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from all_user
+        where user_id = #{userId,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from all_user
+        where user_id = #{userId,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" keyColumn="user_id" keyProperty="userId" parameterType="com.example.entity.User"
+            useGeneratedKeys="true">
+        insert into all_user (`name`, `password`, `role`,
+                              nick_name)
+        values (#{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{role,jdbcType=BIGINT},
+                #{nickName,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" keyColumn="user_id" keyProperty="userId" parameterType="com.example.entity.User"
+            useGeneratedKeys="true">
+        insert into all_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                `name`,
+            </if>
+            <if test="password != null">
+                `password`,
+            </if>
+            <if test="role != null">
+                `role`,
+            </if>
+            <if test="nickName != null">
+                nick_name,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="role != null">
+                #{role,jdbcType=BIGINT},
+            </if>
+            <if test="nickName != null">
+                #{nickName,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.example.entity.User">
+        update all_user
+        <set>
+            <if test="name != null">
+                `name` = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                `password` = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="role != null">
+                `role` = #{role,jdbcType=BIGINT},
+            </if>
+            <if test="nickName != null">
+                nick_name = #{nickName,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where user_id = #{userId,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.example.entity.User">
+        update all_user
+        set `name`     = #{name,jdbcType=VARCHAR},
+            `password` = #{password,jdbcType=VARCHAR},
+            `role`     = #{role,jdbcType=BIGINT},
+            nick_name  = #{nickName,jdbcType=VARCHAR}
+        where user_id = #{userId,jdbcType=BIGINT}
+    </update>
+    <select id="selectAll" resultType="com.example.entity.User">
+        select
+        <include refid="Base_Column_List"/>
+        from all_user
+        where `role` = #{group,jdbcType=BIGINT}
+        <if test="name != ''">
+            AND name = #{name,jdbcType=VARCHAR}
+        </if>
+        order by user_id asc
+    </select>
+    <select id="login" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from all_user
+        where BINARY `name` = #{name,jdbcType=VARCHAR} AND `password` = #{password,jdbcType=VARCHAR}
+    </select>
+    <select id="getUserByName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from all_user
+        where BINARY `name` = #{name,jdbcType=VARCHAR}
+    </select>
+    <select id="getNickNameByName" resultType="java.lang.String">
+        select nick_name
+        from all_user
+        where BINARY `name` = #{name,jdbcType=VARCHAR}
+    </select>
+    <insert id="follow" parameterType="java.lang.Long">
+        insert into follow(`user_id`, `club_id`)
+        values (#{user,jdbcType=BIGINT}, #{club,jdbcType=BIGINT})
+    </insert>
+    <select id="selectFollow" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM `follow`
+        where user_id = #{user,jdbcType=BIGINT}
+          and club_id = #{club,jdbcType=BIGINT}
+    </select>
+    <delete id="unfollow" parameterType="java.lang.Long">
+        delete
+        from follow
+        where user_id = #{user,jdbcType=BIGINT}
+          AND club_id = #{club,jdbcType=BIGINT}
+    </delete>
 </mapper>

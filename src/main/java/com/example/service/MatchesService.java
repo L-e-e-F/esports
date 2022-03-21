@@ -20,4 +20,6 @@ public interface MatchesService {
     int updateByPrimaryKeySelective(Matches record);
 
     int deleteByPrimaryKey(Long id);
+
+    Page<Matches> selectFollow(Long user,String club,String name);
 }

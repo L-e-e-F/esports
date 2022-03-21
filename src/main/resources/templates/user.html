@@ -1,10 +1,469 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8" />
+    <title>俱乐部管理</title>
+    <link rel="stylesheet" href="../css/element.css" />
+    <link rel="stylesheet" href="../css/base.css" />
 </head>
 <body>
-<h1>user</h1>
+<div id="wrapper" v-cloak>
+    <el-tabs v-model="group" @tab-click="handleClick" stretch>
+        <el-tab-pane label="管理员" name="1">
+            <div>
+                <el-input
+                        v-model="search"
+                        style="width: 20%"
+                        suffix-icon="el-icon-search"
+                        placeholder="请输入用户名搜索"
+                ></el-input>
+                <el-button @click="loadTable" type="primary" style="margin: 5px 0"
+                >查询</el-button
+                >
+                <el-button @click="add" type="primary" style="margin: 5px 0"
+                >新增</el-button
+                >
+            </div>
+            <el-table :data="tableData" border style="width: 100%">
+                <el-table-column prop="name" label="用户名"></el-table-column>
+                <el-table-column prop="nickName" label="昵称"></el-table-column>
+                <el-table-column fixed="right" label="操作" width="150">
+                    <template slot-scope="scope">
+                        <el-button
+                                type="primary"
+                                @click="edit(scope.row)"
+                                icon="el-icon-edit"
+                                circle
+                        ></el-button>
+                        <el-popconfirm
+                                @onConfirm="del(scope.row.userId)"
+                                title="确定删除？"
+                        >
+                            <el-button
+                                    type="danger"
+                                    icon="el-icon-delete"
+                                    circle
+                                    slot="reference"
+                            ></el-button>
+                        </el-popconfirm>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <!-- 分页 -->
+            <div style="background-color: white; padding: 10px 0">
+                <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="pageNum"
+                        :page-size="pageSize"
+                        layout="total, prev, pager, next, jumper"
+                        :total="total"
+                >
+                </el-pagination>
+            </div>
+        </el-tab-pane>
+        <el-tab-pane label="普通用户" name="2">
+            <div>
+                <el-input
+                        v-model="search"
+                        style="width: 20%"
+                        suffix-icon="el-icon-search"
+                        placeholder="请输入用户名搜索"
+                ></el-input>
+                <el-button @click="loadTable" type="primary" style="margin: 5px 0"
+                >查询</el-button
+                >
+                <el-button @click="add" type="primary" style="margin: 5px 0"
+                >新增</el-button
+                >
+            </div>
+            <el-table :data="tableData" border style="width: 100%">
+                <el-table-column prop="name" label="用户名"></el-table-column>
+                <el-table-column prop="nickName" label="昵称"></el-table-column>
+                <el-table-column fixed="right" label="操作" width="150">
+                    <template slot-scope="scope">
+                        <el-button
+                                type="primary"
+                                @click="edit(scope.row)"
+                                icon="el-icon-edit"
+                                circle
+                        ></el-button>
+                        <el-popconfirm
+                                @onConfirm="del(scope.row.userId)"
+                                title="确定删除？"
+                        >
+                            <el-button
+                                    type="danger"
+                                    icon="el-icon-delete"
+                                    circle
+                                    slot="reference"
+                            ></el-button>
+                        </el-popconfirm>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <!-- 分页 -->
+            <div style="background-color: white; padding: 10px 0">
+                <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="pageNum"
+                        :page-size="pageSize"
+                        layout="total, prev, pager, next, jumper"
+                        :total="total"
+                >
+                </el-pagination>
+            </div>
+        </el-tab-pane>
+        <el-tab-pane label="俱乐部方" name="3">
+            <div>
+                <el-input
+                        v-model="search"
+                        style="width: 20%"
+                        suffix-icon="el-icon-search"
+                        placeholder="请输入用户名搜索"
+                ></el-input>
+                <el-button @click="loadTable" type="primary" style="margin: 5px 0"
+                >查询</el-button
+                >
+                <el-button @click="add" type="primary" style="margin: 5px 0"
+                >新增</el-button
+                >
+            </div>
+            <el-table :data="tableData" border style="width: 100%">
+                <el-table-column prop="name" label="用户名"></el-table-column>
+                <el-table-column prop="nickName" label="昵称"></el-table-column>
+                <el-table-column fixed="right" label="操作" width="150">
+                    <template slot-scope="scope">
+                        <el-button
+                                type="primary"
+                                @click="edit(scope.row)"
+                                icon="el-icon-edit"
+                                circle
+                        ></el-button>
+                        <el-popconfirm
+                                @onConfirm="del(scope.row.userId)"
+                                title="确定删除？"
+                        >
+                            <el-button
+                                    type="danger"
+                                    icon="el-icon-delete"
+                                    circle
+                                    slot="reference"
+                            ></el-button>
+                        </el-popconfirm>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <!-- 分页 -->
+            <div style="background-color: white; padding: 10px 0">
+                <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="pageNum"
+                        :page-size="pageSize"
+                        layout="total, prev, pager, next, jumper"
+                        :total="total"
+                >
+                </el-pagination>
+            </div>
+        </el-tab-pane>
+        <el-tab-pane label="赛事方" name="4">
+            <div>
+                <el-input
+                        v-model="search"
+                        style="width: 20%"
+                        suffix-icon="el-icon-search"
+                        placeholder="请输入用户名搜索"
+                ></el-input>
+                <el-button @click="loadTable" type="primary" style="margin: 5px 0"
+                >查询</el-button
+                >
+                <el-button @click="add" type="primary" style="margin: 5px 0"
+                >新增</el-button
+                >
+            </div>
+            <el-table :data="tableData" border style="width: 100%">
+                <el-table-column prop="name" label="用户名"></el-table-column>
+                <el-table-column prop="nickName" label="昵称"></el-table-column>
+                <el-table-column fixed="right" label="操作" width="150">
+                    <template slot-scope="scope">
+                        <el-button
+                                type="primary"
+                                @click="edit(scope.row)"
+                                icon="el-icon-edit"
+                                circle
+                        ></el-button>
+                        <el-popconfirm
+                                @onConfirm="del(scope.row.userId)"
+                                title="确定删除？"
+                        >
+                            <el-button
+                                    type="danger"
+                                    icon="el-icon-delete"
+                                    circle
+                                    slot="reference"
+                            ></el-button>
+                        </el-popconfirm>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <!-- 分页 -->
+            <div style="background-color: white; padding: 10px 0">
+                <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="pageNum"
+                        :page-size="pageSize"
+                        layout="total, prev, pager, next, jumper"
+                        :total="total"
+                >
+                </el-pagination>
+            </div>
+        </el-tab-pane>
+    </el-tabs>
+    <el-dialog title="用户信息" :visible.sync="dialogFormVisible" width="40%"
+               :close-on-click-modal="false">
+        <el-form :model="entity">
+            <el-form-item label="用户名" label-width="100px">
+                <el-input v-model="entity.name" autocomplete="off" style="width: 80%"></el-input>
+            </el-form-item>
+            <el-form-item v-if="entity.userId != null" label="密码" label-width="100px">
+                <el-button size="small" type="primary" @click="password(entity)" >重置密码</el-button>
+            </el-form-item>
+            <el-form-item v-else label="密码" label-width="100px">
+                <el-input v-model="entity.password" autocomplete="off" style="width: 80%"></el-input>
+            </el-form-item>
+            <el-form-item label="昵称" label-width="100px">
+                <el-input v-model="entity.nickName" autocomplete="off" style="width: 80%"></el-input>
+            </el-form-item>
+            <el-form-item label="账户类型" label-width="100px">
+                <el-select
+                        v-model="entity.role"
+                        style="width: 80%;"
+                        placeholder="请选择用户类型"
+                >
+                    <el-option
+                            v-for="item in role"
+                            :key="item.id"
+                            :label="item.description"
+                            :value="item.id"
+                    >
+                    </el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="save">确 定</el-button>
+        </div>
+    </el-dialog>
+</div>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/vue.js"></script>
+<script src="../js/element.js"></script>
+
+<script>
+    let vm = new Vue({
+        el: "#wrapper",
+        data: {
+            tableData: [],
+            entity: {},
+            pageNum: 1,
+            pageSize: 5,
+            total: 0,
+            group: "1",
+            search: '',
+            dialogFormVisible: false,
+            fileList: [],
+            role:[]
+        },
+        created() {
+            this.loadTable();
+        },
+        methods: {
+            loadTable() {
+                if(!this.search){
+                    $.get(
+                        "/user/all?pageNum=" +
+                        this.pageNum +
+                        "&pageSize=" +
+                        this.pageSize +
+                        "&group=" +
+                        this.group
+                    ).then((res) => {
+                        if (res.code === 0) {
+                            this.tableData = res.data.list;
+                            this.total = res.data.total;
+                            console.log(this.total)
+                        } else {
+                            this.tableData = [];
+                            this.total = 0;
+                        }
+                    });
+                }else{
+                    $.get(
+                        "/user/all?pageNum=" +
+                        this.pageNum +
+                        "&pageSize=" +
+                        this.pageSize +
+                        "&group=" +
+                        this.group +
+                        "&name=" +
+                        this.search
+                    ).then((res) => {
+                        if (res.code === 0) {
+                            this.tableData = res.data.list;
+                            this.total = res.data.total;
+                            console.log(this.total)
+                        } else {
+                            this.tableData = [];
+                            this.total = 0;
+                        }
+                    });
+                }
+            },
+            handleSizeChange(pageSize) {
+                this.pageSize = pageSize;
+                this.loadTable();
+            },
+            handleCurrentChange(pageNum) {
+                this.pageNum = pageNum;
+                this.loadTable();
+            },
+            handleClick(tabs) {
+                this.group = tabs.name;
+                this.search = null;
+                this.loadTable();
+            },
+            RoleType() {
+                $.ajax({
+                    url: "/role/all",
+                    type: "GET",
+                }).then((res) => {
+                    this.role = res;
+                });
+            },
+            add() {
+                this.RoleType();
+                this.dialogFormVisible = true;
+                this.entity = {};
+            },
+            edit(obj){
+                this.RoleType();
+                this.entity = JSON.parse(JSON.stringify(obj));
+                this.dialogFormVisible = true;
+            },
+            del(obj){
+                $.ajax({
+                    url: "/user/set/" + obj,
+                    type: 'DELETE',
+                }).then((res) => {
+                    if(res.code === 0){
+                        this.$message({
+                            message: "删除成功",
+                            type: "success"
+                        });
+                        this.loadTable();
+                    }else {
+                        if(res.message === "未知异常"){
+                            this.$message({
+                                message: "权限不足",
+                                type: "error"
+                            })
+                        }else{
+                            this.$message({
+                                message: res.message,
+                                type: "error"
+                            })
+                        }
+                    }
+                })
+            },
+            password(entity){
+                console.log(entity);
+                $.ajax({
+                    url: "/user/password/",
+                    type: 'POST',
+                    contentType: "application/json",
+                    data: JSON.stringify(entity),
+                }).then((res) => {
+                    if(res.code === 0){
+                        this.$message({
+                            message: "重置成功，默认密码为123456",
+                            type: "success"
+                        });
+                        this.loadTable();
+                    }else {
+                        if(res.message === "未知异常"){
+                            this.$message({
+                                message: "权限不足",
+                                type: "error"
+                            })
+                        }else{
+                            this.$message({
+                                message: res.message,
+                                type: "error"
+                            })
+                        }
+                    }
+                })
+            },
+            save(){
+                console.log(this.entity)
+                if (!this.entity.name) {
+                    this.$message({
+                        message: "请输入用户名",
+                        type: "error",
+                    });
+                    return;
+                }
+                if (!this.entity.nickName) {
+                    this.$message({
+                        message: "请输入昵称",
+                        type: "error",
+                    });
+                    return;
+                }
+                if (!this.entity.password) {
+                    this.$message({
+                        message: "请输入密码",
+                        type: "error",
+                    });
+                    return;
+                }
+                if (!this.entity.role) {
+                    this.$message({
+                        message: "请选择用户类型",
+                        type: "error",
+                    });
+                    return;
+                }
+                let type = this.entity.userId ? "PUT" : "POST";
+                $.ajax({
+                    url: "/user/set/",
+                    type: type,
+                    contentType: "application/json",
+                    data: JSON.stringify(this.entity),
+                }).then((res) => {
+                    console.log(res);
+                    if (res.code === 0) {
+                        this.$message({
+                            message: "保存成功",
+                            type: "success",
+                        });
+                        this.loadTable();
+                    } else {
+                        this.$message({
+                            message: res.message,
+                            type: "error",
+                        });
+                    }
+                    this.dialogFormVisible = false;
+                });
+            }
+        },
+    });
+</script>
 </body>
 </html>

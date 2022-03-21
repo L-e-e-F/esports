@@ -22,4 +22,6 @@ public interface MatchesMapper {
     Page<Matches> selectALL(String club,String name);
 
     Page<Matches> selectALLByTime(Date time);
+
+    Page<Matches> selectFollow(Long user,String club,String name);
 }

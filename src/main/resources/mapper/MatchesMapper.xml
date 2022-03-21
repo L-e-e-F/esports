@@ -115,4 +115,22 @@
                            on em.event_id = e.id
         where m.`time` = #{time,jdbcType=DATE}
     </select>
+    <select id="selectFollow" resultMap="BaseResultMap">
+        SELECT m.*,e.`name` from follow f
+            LEFT JOIN club c
+                on f.club_id = c.club_id
+            LEFT JOIN matches m
+                on c.club_name = m.home_team or c.club_name = m.visiting_team
+            LEFT JOIN event_matches em
+                on em.matches_id = m.id
+            LEFT JOIN `event` e
+                on em.event_id = e.id
+        where f.user_id = #{user,jdbcType=BIGINT}
+        <if test="club != ''">
+            AND c.club_name = #{club,jdbcType=VARCHAR}
+        </if>
+        <if test="name != ''">
+            AND e.name = #{name,jdbcType=VARCHAR}
+        </if>
+    </select>
 </mapper>

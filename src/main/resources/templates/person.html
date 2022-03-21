@@ -2,9 +2,152 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta HTTP-EQUIV="pragma" CONTENT="no-cache">
+    <meta HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
+    <meta HTTP-EQUIV="expires" CONTENT="0">
+    <title>个人信息</title>
+    <link rel="stylesheet" href="../css/element.css">
+    <link rel="stylesheet" href="../css/base.css">
 </head>
-<body>
-<h1>adminsetting</h1>
+<body style="background-color: #ddd">
+<div id="wrapper" v-cloak>
+
+    <el-card style="width: 40%;margin: 0 auto">
+        <div slot="header" class="clearfix" style="display: flex">
+            <div style="font-size: 24px; flex: 1">个人信息</div>
+            <div style="flex: 1; text-align: right">
+                <el-button size="small" type="primary" @click="edit">编辑</el-button>
+            </div>
+        </div>
+        <div>
+            <div style="width: 300px; margin: 0 auto">
+                <el-form>
+                    <el-form-item label="用户名：" label-width="120px" style="margin: 0">
+                        <div>{{ entity.name }}</div>
+                    </el-form-item>
+                    <el-form-item label="昵称：" label-width="120px" style="margin: 0">
+                        <div>{{ entity.nickName }}</div>
+                    </el-form-item>
+                    <el-form-item label="账户类型：" label-width="120px" style="margin: 0">
+                        <div>{{ entity.role }}</div>
+                    </el-form-item>
+                </el-form>
+            </div>
+
+
+        </div>
+    </el-card>
+
+    <el-dialog title="用户信息" :visible.sync="dialogFormVisible" width="40%">
+        <el-form :model="entity">
+            <el-form-item label="用户名" label-width="100px">
+                <el-input v-model="entity.name" autocomplete="off" style="width: 80%"></el-input>
+            </el-form-item>
+            <el-form-item label="新密码" label-width="100px">
+                <el-input show-password v-model="entity.password" autocomplete="off" style="width: 80%"></el-input>
+            </el-form-item>
+            <el-form-item label="昵称" label-width="100px">
+                <el-input v-model="entity.nickName" autocomplete="off" style="width: 80%"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="save">确 定</el-button>
+        </div>
+    </el-dialog>
+
+
+
+</div>
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/vue.js"></script>
+<script src="../js/element.js"></script>
+
+<script>
+    new Vue({
+        el: "#wrapper",
+        data: {
+            isCollapse: false,
+            entity: {},
+            role: [],
+            dialogFormVisible: false,
+            flag: true
+        },
+        created() {
+            this.RoleType();
+            this.load();
+        },
+        methods: {
+            handleCollapse() {
+                this.isCollapse = !this.isCollapse;
+            },
+            edit() {
+                // this.entity
+                this.dialogFormVisible = true;
+            },
+            load() {
+                $.get("/user/LoginUser").then(res => {
+                    console.log(res)
+                    this.entity = res.data;
+                    console.log(this.role)
+                    for(let i in this.role) {
+                        if(this.role[i].id === this.entity.role){
+                            this.entity.role = this.role[i].description
+                        }
+
+                    }
+                })
+
+            },
+            RoleType() {
+                $.ajax({
+                    url: "/role/all",
+                    type: "GET",
+                }).then((res) => {
+                    this.role = res;
+                });
+            },
+            save() {
+                if (!this.entity.name) {
+                    this.$message({
+                        message: "请输入用户名",
+                        type: "error",
+                    });
+                    return;
+                }
+                if (!this.entity.nickName) {
+                    this.$message({
+                        message: "请输入昵称",
+                        type: "error",
+                    });
+                    return;
+                }
+                this.entity.role = null
+                    $.ajax({
+                        url: "/user/set/",
+                        type: "PUT",
+                        contentType: "application/json",
+                        data: JSON.stringify(this.entity),
+                        async: false
+                    }).then(res => {
+                        if (res.code === 0) {
+                            this.$message({
+                                message: "保存成功,请退出重新登录查看",
+                                type: "success"
+                            });
+                            this.load();
+                        } else {
+                            this.$message({
+                                message: res.msg,
+                                type: "error"
+                            })
+                        }
+                        this.dialogFormVisible = false;
+                    })
+            },
+        }
+    })
+</script>
 </body>
 </html>

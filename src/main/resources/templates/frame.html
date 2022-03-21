@@ -170,7 +170,7 @@
             logout() {
                 $.get("/user/logout");
                 window.location.replace("/login");
-                localStorage.removeItem("src");
+                sessionStorage.removeItem("src");
             },
             getUser() {
                 $.get("/user/LoginUser").then((res) => {

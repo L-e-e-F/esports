@@ -69,4 +69,9 @@ public class MatchesServiceImp implements MatchesService {
     public int deleteByPrimaryKey(Long id) {
         return matchesMapper.deleteByPrimaryKey(id);
     }
+
+    @Override
+    public Page<Matches> selectFollow(Long user,String club, String name) {
+        return matchesMapper.selectFollow(user,club,name);
+    }
 }

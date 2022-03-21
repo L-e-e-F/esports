@@ -20,13 +20,16 @@ public class RoleController {
 
     @GetMapping("/roleType")
     public List<Role> getAllUserType(){
-//        System.out.println("2"+roleService.getAllUserType());
         return roleService.getAllUserType();
     }
 
     @GetMapping("/getRole")
     public String getRole(@RequestParam Long id){
-
         return Roles.valueOf(roleService.selectByPrimaryKey(id)).getName();
+    }
+
+    @GetMapping("/all")
+    public List<Role> getAll(){
+        return roleService.getAll();
     }
 }

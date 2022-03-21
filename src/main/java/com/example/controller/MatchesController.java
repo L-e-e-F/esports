@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.common.Result;
 import com.example.entity.Matches;
+import com.example.entity.User;
 import com.example.enums.MatchesResult;
 import com.example.enums.ResultCode;
 import com.example.service.ClubService;
@@ -9,6 +10,7 @@ import com.example.service.EventService;
 import com.example.service.MatchesService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -35,6 +37,19 @@ public class MatchesController {
                                @RequestParam(required = false, defaultValue = "") String name){
         PageHelper.startPage(pageNum, pageSize);
         PageInfo page = new PageInfo(matchesService.selectALL(club,name));
+        if(page.getTotal() == 0)
+            return Result.ErrorResult(ResultCode.ERROR_MATCHES);
+        return Result.SuccessResult(page);
+    }
+
+    @GetMapping("/follow")
+    public Result<?> follow(@RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                               @RequestParam(required = false, defaultValue = "4") Integer pageSize,
+                               @RequestParam(required = false, defaultValue = "") String club,
+                               @RequestParam(required = false, defaultValue = "") String name){
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        PageHelper.startPage(pageNum, pageSize);
+        PageInfo page = new PageInfo(matchesService.selectFollow(user.getUserId(),club,name));
         if(page.getTotal() == 0)
             return Result.ErrorResult(ResultCode.ERROR_MATCHES);
         return Result.SuccessResult(page);
