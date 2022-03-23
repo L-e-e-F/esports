@@ -7,6 +7,7 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.servlet.Filter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -50,11 +51,13 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setLoginUrl("/login");
         //未授权请求
         shiroFilterFactoryBean.setUnauthorizedUrl("/Unauthorized");
+        // 自定义 shiro添加多角色
+        LinkedHashMap<String, Filter> filtersMap = new LinkedHashMap<>();
+        filtersMap.put("roles", new RoleFilter());
+        shiroFilterFactoryBean.setFilters(filtersMap);
         //拦截map，从上到下顺序判断
         Map<String, String> filterMap = new LinkedHashMap<>();
-//        shiroFilterFactoryBean.setLoginUrl("/login");
         //放权的url
-//        filterMap.put("/user/login","anon");
         filterMap.put("/css/**","anon");
         filterMap.put("/js/**","anon");
         filterMap.put("/images/**","anon");
@@ -63,15 +66,22 @@ public class ShiroConfig {
         filterMap.put("/user/login","anon");
         filterMap.put("/user/register","anon");
         filterMap.put("/user/logout","anon");
-//        filterMap.put("/{page}","authc");
-
-        filterMap.put("/club/set/**","roles[ROLE_ADMIN]");
+        //认证的url
+        filterMap.put("/{page}","authc");
         filterMap.put("/club/all","authc");
+        filterMap.put("/club/ALL","authc");
+        //授权的url
+        filterMap.put("/club/follow","roles[ROLE_USER]");
+        filterMap.put("/club/user","roles[ROLE_CLUB]");
+        filterMap.put("/club/eventClub/**","roles[ROLE_ADMIN,ROLE_CHAMPIONSHIP,ROLE_CLUB]");
+        filterMap.put("/club/set/**","roles[ROLE_ADMIN,ROLE_CLUB]");
+//        filterMap.put("/club/userSet/**","roles[ROLE_CLUB]");
+
 
 //        filterMap.put("/front/**","anon");
-//        //授权的url
+
 //        filterMap.put("/end/**","authc");
-//        //认证的url
+
 //        filterMap.put("/add","roles[ROLE_ADMIN]");
 
 

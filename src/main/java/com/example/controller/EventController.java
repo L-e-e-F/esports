@@ -91,12 +91,12 @@ public class EventController {
         }
     }
 
-    @PutMapping("/eventclub")
-    public Result<?> inserteventclub(@RequestParam Long eventid,@RequestParam Long clubid ){
-        int row = eventService.insertEventClub(eventid, clubid);
+    @PutMapping("/eventClub")
+    public Result<?> insertEventClub(@RequestParam Long eventId,@RequestParam Long clubId ){
+        int row = eventService.insertEventClub(eventId, clubId);
         if(row != 0){
-            int num = eventService.selectEventClubNum(eventid);
-            Event e= eventService.selectByPrimaryKey(eventid);
+            int num = eventService.selectEventClubNum(eventId);
+            Event e= eventService.selectByPrimaryKey(eventId);
             eventService.updateByPrimaryKeySelective(e,num);
             return Result.SuccessResult();
         }else{
@@ -115,9 +115,9 @@ public class EventController {
         }
     }
 
-    @DeleteMapping("/eventclub")
-    public Result<?> deleteEventClub(@RequestParam Long eventid,@RequestParam Long clubid ){
-        int row = eventService.deleteEventClub(eventid, clubid);
+    @DeleteMapping("/eventClub")
+    public Result<?> deleteEventClub(@RequestParam Long eventId,@RequestParam Long clubId ){
+        int row = eventService.deleteEventClub(eventId, clubId);
         if(row != 0){
             return Result.SuccessResult();
         }else{

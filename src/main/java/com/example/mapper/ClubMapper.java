@@ -27,4 +27,14 @@ public interface ClubMapper {
     void updateClubPoints (String club);
 
     Page<Club> follow(Long user,String club);
+
+    Page<Club> selectUserClub(String group, String name,Long user);
+
+    List<Club> selectUserClubList(String group,Long user);
+
+    void insertUserClub(Long user, Long club);
+
+    void deleteUserClub(Long user, Long club);
+
+    Page<Club> selectNotUserClub(String group, String name);
 }

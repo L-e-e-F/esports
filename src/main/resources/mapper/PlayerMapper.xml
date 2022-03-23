@@ -90,4 +90,22 @@
             AND c.club_name = #{club,jdbcType=VARCHAR}
         </if>
     </select>
+    <select id="selectUserClubAll" resultMap="BaseResultMap">
+        SELECT p.*
+        from player p
+        LEFT JOIN club c
+        on p.player_club = c.club_id
+        LEFT JOIN user_club uc
+        on uc.club_id = c.club_id
+        where
+        uc.user_id = #{user,jdbcType=BIGINT}
+        AND p.player_position = #{position,jdbcType=INTEGER}
+        <if test="name != ''">
+            AND p.player_name = #{name,jdbcType=VARCHAR}
+        </if>
+        <if test="club != ''">
+            AND c.club_name = #{club,jdbcType=VARCHAR}
+        </if>
+
+    </select>
 </mapper>

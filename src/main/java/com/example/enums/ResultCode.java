@@ -24,7 +24,9 @@ public enum ResultCode {
     ERROR_PASSWORD(-1, "密码重置失败"),
     ERROR_FOLLOW(-1,"关注失败" ),
     TOO_FOLLOW(-1, "已关注"),
-    ERROR_UNFOLLOW(-1, "取关失败");
+    ERROR_UNFOLLOW(-1, "取关失败"),
+    NOT_ACQUISITION(-1, "收购失败"),
+    NOT_SELL(-1, "卖出失败");
 
 
 

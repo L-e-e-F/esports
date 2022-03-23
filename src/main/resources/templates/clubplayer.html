@@ -409,7 +409,7 @@
             loadTable() {
                 if(!this.searchClub && !this.searchPlayer){
                     $.get(
-                        "/player/all?pageNum=" +
+                        "/player/userClubAll?pageNum=" +
                         this.pageNum +
                         "&pageSize=" +
                         this.pageSize +
@@ -427,7 +427,7 @@
                     });
                 }else{
                     $.get(
-                        "/player/all?pageNum=" +
+                        "/player/userClubAll?pageNum=" +
                         this.pageNum +
                         "&pageSize=" +
                         this.pageSize +
@@ -450,7 +450,7 @@
                 }
                 if(this.searchClub){
                     $.get(
-                        "/player/all?pageNum=" +
+                        "/player/userClubAll?pageNum=" +
                         this.pageNum +
                         "&pageSize=" +
                         this.pageSize +
@@ -472,7 +472,7 @@
                 if(this.searchPlayer){
                     console.log(this.searchPlayer)
                     $.get(
-                        "/player/all?pageNum=" +
+                        "/player/userClubAll?pageNum=" +
                         this.pageNum +
                         "&pageSize=" +
                         this.pageSize +
@@ -509,10 +509,10 @@
             },
             add() {
                 $.get(
-                    "/club/ALL"
+                    "/club/userList"
                 ).then((res) => {
                     if(this.club.length === 1)
-                    this.club.push(...res.data);
+                        this.club.push(...res.data);
                 })
                 this.entity = {}
                 this.dialogFormVisible = true;
@@ -521,7 +521,7 @@
             edit(obj) {
                 console.log(obj)
                 $.get(
-                    "/club/ALL"
+                    "/club/userList"
                 ).then((res) => {
                     if(this.club.length === 1)
                         this.club.push(...res.data);

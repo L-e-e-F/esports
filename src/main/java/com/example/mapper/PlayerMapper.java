@@ -17,4 +17,6 @@ public interface PlayerMapper {
     int updateByPrimaryKey(Player record);
 
     Page<Player> selectAll(int position,String name, String club);
+
+    Page<Player> selectUserClubAll(Long user,int position,String name, String club);
 }

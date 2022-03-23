@@ -142,4 +142,54 @@
             and c.club_name = #{club,jdbcType=VARCHAR}
         </if>
     </select>
+    <select id="selectUserClub" resultMap="BaseResultMap">
+        select c.*
+        from club c
+            LEFT JOIN user_club uc
+                on uc.club_id =c.club_id
+        where uc.user_id = #{user,jdbcType=BIGINT}
+          AND c.club_group = #{group,jdbcType=VARCHAR}
+        <if test="name != ''">
+            AND club_name = #{name,jdbcType=VARCHAR}
+        </if>
+        ORDER BY
+        club_points DESC
+    </select>
+    <select id="selectUserClubList" resultMap="BaseResultMap">
+        select c.*
+        from club c
+        LEFT JOIN user_club uc
+        on uc.club_id =c.club_id
+        where uc.user_id = #{user,jdbcType=BIGINT}
+        <if test="group != ''">
+        AND c.club_group = #{group,jdbcType=VARCHAR}
+        </if>
+        ORDER BY
+        club_points DESC
+    </select>
+    <insert id="insertUserClub" parameterType="java.lang.Long">
+        insert into user_club(`user_id`,`club_id`)
+        values (#{user,jdbcType=BIGINT}, #{club,jdbcType=BIGINT})
+    </insert>
+    <delete id="deleteUserClub" parameterType="java.lang.Long">
+        delete from user_club
+        where `user_id` = #{user,jdbcType=BIGINT}
+          AND `club_id` = #{club,jdbcType=BIGINT}
+    </delete>
+    <select id="selectNotUserClub" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from club
+        where
+              NOT EXISTS
+                  (select 1
+                  from user_club uc
+                      LEFT JOIN club c
+                          on uc.club_id = c.club_id
+                  where c.club_id = club.club_id)
+        AND club_group = #{group,jdbcType=VARCHAR}
+        <if test="name != ''">
+            AND club_name = #{name,jdbcType=VARCHAR}
+        </if>
+    </select>
 </mapper>

@@ -33,4 +33,9 @@ public class PlayerServiceImp implements PlayerService {
     public int deleteByPrimaryKey(Long playerId) {
         return playerMapper.deleteByPrimaryKey(playerId);
     }
+
+    @Override
+    public Page<Player> selectUserClubAll(Long user, int position, String name, String club) {
+        return playerMapper.selectUserClubAll(user,position,name,club);
+    }
 }

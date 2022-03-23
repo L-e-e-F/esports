@@ -12,4 +12,6 @@ public interface PlayerService {
     int updateByPrimaryKey(Player entity);
 
     int deleteByPrimaryKey(Long playerId);
+
+    Page<Player> selectUserClubAll(Long user,int position,String name, String club);
 }

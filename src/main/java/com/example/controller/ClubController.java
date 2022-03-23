@@ -27,90 +27,158 @@ public class ClubController {
                                @RequestParam(required = false, defaultValue = "S") String group,
                                @RequestParam(required = false, defaultValue = "") String name) {
         PageHelper.startPage(pageNum, pageSize);
-        PageInfo page =  new PageInfo(clubService.selectALL(group,name));
+        PageInfo page = new PageInfo(clubService.selectALL(group, name));
         if (page.getTotal() == 0) return Result.ErrorResult(ResultCode.ERROR_CLUB);
         return Result.SuccessResult(page);
     }
 
     @GetMapping("/follow")
     public Result<?> follow(@RequestParam(required = false, defaultValue = "1") Integer pageNum,
-                               @RequestParam(required = false, defaultValue = "4") Integer pageSize,
-                               @RequestParam(required = false, defaultValue = "") String club) {
+                            @RequestParam(required = false, defaultValue = "4") Integer pageSize,
+                            @RequestParam(required = false, defaultValue = "") String club) {
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         PageHelper.startPage(pageNum, pageSize);
-        PageInfo page =  new PageInfo(clubService.follow(user.getUserId(),club));
+        PageInfo page = new PageInfo(clubService.follow(user.getUserId(), club));
         if (page.getTotal() == 0) return Result.ErrorResult(ResultCode.ERROR_CLUB);
         return Result.SuccessResult(page);
     }
 
+    @GetMapping("/NotUser")
+    public Result<?> NotUser(@RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                             @RequestParam(required = false, defaultValue = "4") Integer pageSize,
+                             @RequestParam(required = false, defaultValue = "S") String group,
+                             @RequestParam(required = false, defaultValue = "") String name) {
+        PageHelper.startPage(pageNum, pageSize);
+        PageInfo page = new PageInfo(clubService.selectNotUserClub(group, name));
+        if (page.getTotal() == 0) return Result.ErrorResult(ResultCode.ERROR_CLUB);
+        return Result.SuccessResult(page);
+    }
+
+    @GetMapping("/user")
+    public Result<?> selectUserClub(@RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                                    @RequestParam(required = false, defaultValue = "4") Integer pageSize,
+                                    @RequestParam(required = false, defaultValue = "S") String group,
+                                    @RequestParam(required = false, defaultValue = "") String name) {
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        PageHelper.startPage(pageNum, pageSize);
+        PageInfo page = new PageInfo(clubService.selectUserClub(group, name, user.getUserId()));
+        if (page.getTotal() == 0) return Result.ErrorResult(ResultCode.ERROR_CLUB);
+        return Result.SuccessResult(page);
+    }
+
+    @GetMapping("/userList")
+    public Result<?> selectUserClubList(@RequestParam(required = false, defaultValue = "") String group) {
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        return Result.SuccessResult(clubService.selectUserClubList(group, user.getUserId()));
+    }
+
     @GetMapping("/ALL")
-    public Result<?> ALL(@RequestParam(required = false, defaultValue = "") String group){
+    public Result<?> ALL(@RequestParam(required = false, defaultValue = "") String group) {
         return Result.SuccessResult(clubService.ALL(group));
     }
 
-    @GetMapping("/eventclub/{id}")
-    public Result<?> eventclub(@PathVariable Long id){
+    @GetMapping("/eventClub/{id}")
+    public Result<?> eventClub(@PathVariable Long id) {
         return Result.SuccessResult(clubService.selectEventClub(id));
     }
 
     @PostMapping("/set")
-    public Result<?> Add(@RequestBody Club entity){
+    public Result<?> Add(@RequestBody Club entity) {
         System.out.println(entity);
         int row = clubService.insertSelective(entity);
-        if(row != 0){
+        if (row != 0) {
             return Result.SuccessResult();
-        }else{
+        } else {
             return Result.ErrorResult(ResultCode.ERROR_INSERT);
         }
     }
 
+    @PostMapping("/userSet")
+    public Result<?> AddUserClub(@RequestBody Club entity) {
+        System.out.println(entity);
+        int row = clubService.insertSelective(entity);
+        if (row != 0) {
+            User user = (User) SecurityUtils.getSubject().getPrincipal();
+            Long id = entity.getClubId();
+            clubService.insertUserClub(user.getUserId(), id);
+            return Result.SuccessResult();
+        } else {
+            return Result.ErrorResult(ResultCode.ERROR_INSERT);
+        }
+    }
+
+    @PostMapping("/acquisition")
+    public Result<?> acquisition(@RequestParam Long club) {
+        System.out.println(club);
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        try {
+            clubService.insertUserClub(user.getUserId(), club);
+        } catch (Exception e) {
+            return Result.ErrorResult(ResultCode.NOT_ACQUISITION);
+        }
+        return Result.SuccessResult();
+    }
+
     @PutMapping("/set")
-    public Result<?> upload(@RequestBody Club entity){
+    public Result<?> upload(@RequestBody Club entity) {
         System.out.println(entity.getClubImg());
         int row = clubService.updateByPrimaryKeySelective(entity);
-        if(row != 0){
+        if (row != 0) {
             return Result.SuccessResult();
-        }else{
+        } else {
             return Result.ErrorResult(ResultCode.ERROR_UPLOAD);
         }
     }
 
     @DeleteMapping("/set/{clubId}")
-    public Result<?> delete(@PathVariable Long clubId){
-            System.out.println(clubId);
-            int row = clubService.deleteByPrimaryKey(clubId);
-            if(row != 0){
-                return Result.SuccessResult();
-            }else{
-                return Result.ErrorResult(ResultCode.ERROR_DELETE);
-            }
+    public Result<?> delete(@PathVariable Long clubId) {
+        System.out.println(clubId);
+        int row = clubService.deleteByPrimaryKey(clubId);
+        if (row != 0) {
+            return Result.SuccessResult();
+        } else {
+            return Result.ErrorResult(ResultCode.ERROR_DELETE);
+        }
+    }
+
+    @DeleteMapping("/userSet/{clubId}")
+    public Result<?> deleteUserClub(@PathVariable Long clubId) {
+        System.out.println(clubId);
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        try {
+            clubService.deleteUserClub(user.getUserId(), clubId);
+
+        } catch (Exception e) {
+            return Result.ErrorResult(ResultCode.NOT_SELL);
+        }
+        return Result.SuccessResult();
     }
 
     @PostMapping("/set/img")
-    public Result<?> upload(MultipartFile file){
+    public Result<?> upload(MultipartFile file) {
         System.out.println(file);
-        if (file.isEmpty()){
+        if (file.isEmpty()) {
             return Result.ErrorResult(ResultCode.EMPTY_FILE);
         }
 //        synchronized (ClubController.class) {
-            String filename = file.getOriginalFilename(); //获取上传文件原来的名称
-            String filePath = System.getProperty("user.dir") + "/src/main/resources/static/images/";
-            String name = "../images/";
-            String clubImg;
-            File temp = new File(filePath);
-            if (!temp.exists()) {
-                temp.mkdirs();
-            }
-            File localFile = new File(filePath + filename);
-            try {
-                file.transferTo(localFile); //把上传的文件保存至本地
-                Thread.sleep(1L);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Result.ErrorResult(e.getMessage());
-            }
-            clubImg = name + filename;
-            return Result.SuccessResult(clubImg);
+        String filename = file.getOriginalFilename(); //获取上传文件原来的名称
+        String filePath = System.getProperty("user.dir") + "/src/main/resources/static/images/";
+        String name = "../images/";
+        String clubImg;
+        File temp = new File(filePath);
+        if (!temp.exists()) {
+            temp.mkdirs();
+        }
+        File localFile = new File(filePath + filename);
+        try {
+            file.transferTo(localFile); //把上传的文件保存至本地
+            Thread.sleep(1L);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Result.ErrorResult(e.getMessage());
+        }
+        clubImg = name + filename;
+        return Result.SuccessResult(clubImg);
 //        }
     }
 

@@ -1,8 +1,12 @@
 package com.example.controller;
 
+import com.example.common.Result;
+import com.example.enums.ResultCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller("/")
 public class PageController {
@@ -12,10 +16,16 @@ public class PageController {
         return "login";
     }
 
-    @GetMapping("/{page}")
+    @GetMapping("{page}")
     public String toPage(@PathVariable String page) {
         System.out.println(page);
         return page;
+    }
+
+    @RequestMapping("Unauthorized")
+    @ResponseBody
+    public Result<?> unauthorized(){
+        return Result.ErrorResult(ResultCode.UN_PERMISSION);
     }
 
 //    @GetMapping("favicon.ico")

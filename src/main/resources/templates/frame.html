@@ -145,8 +145,6 @@
             }
             this.handleSelect(this.src)
         },
-        mounted(){
-        },
         methods: {
             handleSelect(key) {
                 this.getUser()
@@ -185,6 +183,7 @@
                     } else {
                         alert(res.message);
                         window.location.replace("/login");
+                        sessionStorage.removeItem("src");
                     }
                 });
             },

@@ -55,4 +55,29 @@ public class ClubServiceImp implements ClubService {
         return clubMapper.follow(user,club);
     }
 
+    @Override
+    public Page<Club> selectUserClub(String group, String name, Long user) {
+        return clubMapper.selectUserClub(group,name,user);
+    }
+
+    @Override
+    public List<Club> selectUserClubList(String group, Long user) {
+        return clubMapper.selectUserClubList(group,user);
+    }
+
+    @Override
+    public void insertUserClub(Long user, Long club) {
+        clubMapper.insertUserClub(user,club);
+    }
+
+    @Override
+    public void deleteUserClub(Long user, Long club) {
+        clubMapper.deleteUserClub(user,club);
+    }
+
+    @Override
+    public Page<Club> selectNotUserClub(String group, String name) {
+        return clubMapper.selectNotUserClub(group,name);
+    }
+
 }

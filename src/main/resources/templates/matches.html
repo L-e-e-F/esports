@@ -301,24 +301,17 @@
                     url: "/matches/set/" + obj,
                     type: 'DELETE'
                 }).then((res) => {
-                    if(res.code === 0){
+                    if (res.code === 0) {
                         this.$message({
                             message: "删除成功",
                             type: "success"
                         });
                         this.loadTable();
-                    }else {
-                        if(res.message === "未知异常"){
-                            this.$message({
-                                message: "权限不足",
-                                type: "error"
-                            })
-                        }else{
-                            this.$message({
-                                message: res.message,
-                                type: "error"
-                            })
-                        }
+                    } else {
+                        this.$message({
+                            message: res.message,
+                            type: "error"
+                        })
                     }
                 })
             },
@@ -369,12 +362,7 @@
                     contentType: "application/json",
                     data: JSON.stringify(this.entity)
                 }).then((res) => {
-                    if (typeof (res.code) === "undefined") {
-                        this.$message({
-                            message: "权限不足",
-                            type: "error"
-                        })
-                    } else if (res.code === 0) {
+                    if (res.code === 0) {
                         this.$message({
                             message: "保存成功",
                             type: "success"

@@ -255,7 +255,7 @@
             edit(obj) {
                 this.event = obj
                 $.get(
-                    "/club/eventclub/" +
+                    "/club/eventClub/" +
                     obj
                 ).then((res) => {
                     if (res.code === 0) {
@@ -269,53 +269,42 @@
             del(obj) {
                 console.log(obj)
                 $.ajax({
-                    url: "/event/eventclub?eventid=" +
+                    url: "/event/eventClub?eventId=" +
                         this.event +
-                        "&clubid=" +
+                        "&clubId=" +
                         obj,
                     type: 'DELETE',
                 }).then((res) => {
-                    if(res.code === 0){
+                    if (res.code === 0) {
                         this.$message({
                             message: "删除成功",
                             type: "success"
                         });
-                        this.edit(this.event);
-                    }else {
-                        if(res.message === "未知异常"){
-                            this.$message({
-                                message: "权限不足",
-                                type: "error"
-                            })
-                        }else{
-                            this.$message({
-                                message: res.message,
-                                type: "error"
-                            })
-                        }
+                        this.dialogFormVisible = false;
+                        this.loadTable();
+                    } else {
+                        this.$message({
+                            message: res.message,
+                            type: "error"
+                        })
                     }
                 })
             },
             add(obj) {
                 console.log(obj,this.event)
                 $.ajax({
-                    url: "/event/eventclub?eventid=" +
+                    url: "/event/eventClub?eventId=" +
                             this.event +
-                            "&clubid=" +
+                            "&clubId=" +
                             obj,
                     type: 'PUT',
                 }).then((res) => {
-                    if(typeof(res.code) === "undefined"){
-                        this.$message({
-                            message: "权限不足",
-                            type: "error"
-                        })
-                    }
-                    else if (res.code === 0) {
+                    if (res.code === 0) {
                         this.$message({
                             message: "保存成功",
                             type: "success"
                         });
+                        this.loadTable();
                     } else {
                         this.$message({
                             message: res.message,

@@ -3,7 +3,6 @@ package com.example.exception;
 import com.example.common.Result;
 import com.example.enums.ResultCode;
 import org.apache.shiro.authz.AuthorizationException;
-import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -11,10 +10,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @ControllerAdvice
 public class GlobalExceptionHandler{
 
+    @ExceptionHandler({ AuthorizationException.class })
+    @ResponseBody//返回json串
+    public Result<?> defaultExceptionHandler(Exception e){
+        System.out.println(e.getMessage());
+        return Result.ErrorResult(ResultCode.UN_PERMISSION);
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseBody//返回json串
     public Result<?> error(Exception e){
-        System.out.println(e);
+        System.out.println(e.getMessage());
         return Result.ErrorResult(ResultCode.Unknown_Exception);
     }
 
@@ -25,10 +31,4 @@ public class GlobalExceptionHandler{
         return Result.ErrorResult(e.getMessage());
     }
 
-    @ExceptionHandler({ UnauthorizedException.class, AuthorizationException.class })
-    @ResponseBody//返回json串
-    public Result<?> defaultExceptionHandler(Exception e){
-        System.out.println(e.getMessage());
-        return Result.ErrorResult(e.getMessage());
-    }
 }
