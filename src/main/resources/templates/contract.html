@@ -1,10 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8" />
+    <title>承包赛事</title>
+    <link rel="stylesheet" href="../css/element.css" />
+    <link rel="stylesheet" href="../css/base.css" />
 </head>
 <body>
-contract
+<div id="wrapper" v-cloak>
+    <el-tabs v-model="group" @tab-click="handleClick" stretch>
+        <el-tab-pane label="Major" name="Major">
+            <div>
+                <el-input
+                        v-model="search"
+                        style="width: 20%"
+                        suffix-icon="el-icon-search"
+                        placeholder="请输入赛事名搜索"
+                ></el-input>
+                <el-button @click="loadTable" type="primary" style="margin: 5px 0"
+                >查询
+                </el-button
+                >
+            </div>
+            <el-table :data="tableData" border style="width: 100%">
+                <el-table-column prop="name" label="赛事名"></el-table-column>
+                <el-table-column prop="time" label="开始时间"></el-table-column>
+                <el-table-column prop="status" label="状态"></el-table-column>
+                <el-table-column
+                        prop="clubum"
+                        label="俱乐部数量"
+                        sortable
+                ></el-table-column>
+                <el-table-column fixed="right" label="操作" width="150">
+                    <template slot-scope="scope">
+                        <el-button
+                                type="primary"
+                                @click="get(scope.row.id)"
+                                icon="el-icon-success"
+                                circle
+                        ></el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <!-- 分页 -->
+            <div style="background-color: white; padding: 10px 0">
+                <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="pageNum"
+                        :page-size="pageSize"
+                        layout="total, prev, pager, next, jumper"
+                        :total="total"
+                >
+                </el-pagination>
+            </div>
+        </el-tab-pane>
+        <el-tab-pane label="Minor" name="Minor">
+            <div>
+                <el-input
+                        v-model="search"
+                        style="width: 20%"
+                        suffix-icon="el-icon-search"
+                        placeholder="请输入赛事名搜索"
+                ></el-input>
+                <el-button @click="loadTable" type="primary" style="margin: 5px 0"
+                >查询
+                </el-button
+                >
+            </div>
+            <el-table :data="tableData" border style="width: 100%">
+                <el-table-column prop="name" label="赛事名"></el-table-column>
+                <el-table-column prop="time" label="开始时间"></el-table-column>
+                <el-table-column prop="status" label="状态"></el-table-column>
+                <el-table-column
+                        prop="clubum"
+                        label="俱乐部数量"
+                        sortable
+                ></el-table-column>
+                <el-table-column fixed="right" label="操作" width="150">
+                    <template slot-scope="scope">
+                        <el-button
+                                type="primary"
+                                @click="get(scope.row.id)"
+                                icon="el-icon-success"
+                                circle
+                        ></el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <!-- 分页 -->
+            <div style="background-color: white; padding: 10px 0">
+                <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="pageNum"
+                        :page-size="pageSize"
+                        layout="total, prev, pager, next, jumper"
+                        :total="total"
+                >
+                </el-pagination>
+            </div>
+        </el-tab-pane>
+    </el-tabs>
+</div>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/vue.js"></script>
+<script src="../js/element.js"></script>
+
+<script>
+    let vm = new Vue({
+        el: "#wrapper",
+        data: {
+            tableData: [],
+            pageNum: 1,
+            pageSize: 5,
+            total: 0,
+            group: "Major",
+            search: '',
+        },
+        created() {
+            this.loadTable();
+        },
+        methods: {
+            loadTable() {
+                console.log(this.search)
+                if(!this.search){
+                    $.get(
+                        "/event/NotUser?pageNum=" +
+                        this.pageNum +
+                        "&pageSize=" +
+                        this.pageSize +
+                        "&group=" +
+                        this.group
+                    ).then((res) => {
+                        if (res.code === 0) {
+                            this.tableData = res.data.list;
+                            this.total = res.data.total;
+                            console.log(this.total)
+                        } else {
+                            this.tableData = [];
+                            this.total = 0;
+                        }
+                    });
+                }else{
+                    $.get(
+                        "/event/NotUser?pageNum=" +
+                        this.pageNum +
+                        "&pageSize=" +
+                        this.pageSize +
+                        "&group=" +
+                        this.group +
+                        "&name=" +
+                        this.search
+                    ).then((res) => {
+                        if (res.code === 0) {
+                            this.tableData = res.data.list;
+                            this.total = res.data.total;
+                            console.log(this.total)
+                        } else {
+                            this.tableData = [];
+                            this.total = 0;
+                        }
+                    });
+                }
+            },
+            handleSizeChange(pageSize) {
+                this.pageSize = pageSize;
+                this.loadTable();
+            },
+            handleCurrentChange(pageNum) {
+                this.pageNum = pageNum;
+                this.loadTable();
+            },
+            handleClick(tabs) {
+                this.group = tabs.name;
+                this.search = null;
+                this.loadTable();
+            },
+            get(obj){
+                console.log(obj)
+                $.ajax({
+                    url: "/event/contract?event=" + obj,
+                    type: 'POST',
+                }).then((res) => {
+                    if (res.code === 0) {
+                        this.$message({
+                            message: "承包成功",
+                            type: "success"
+                        });
+                        this.loadTable();
+                    } else {
+                        this.$message({
+                            message: res.message,
+                            type: "error"
+                        })
+                    }
+                })
+            },
+
+
+        },
+    });
+</script>
 </body>
 </html>

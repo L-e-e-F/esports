@@ -26,7 +26,8 @@ public enum ResultCode {
     TOO_FOLLOW(-1, "已关注"),
     ERROR_UNFOLLOW(-1, "取关失败"),
     NOT_ACQUISITION(-1, "收购失败"),
-    NOT_SELL(-1, "卖出失败");
+    NOT_SELL(-1, "卖出失败"),
+    NOT_CONTRACT(-1, "承包失败");
 
 
 

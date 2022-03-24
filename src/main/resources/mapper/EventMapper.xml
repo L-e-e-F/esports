@@ -1,173 +1,225 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.EventMapper">
-  <resultMap id="BaseResultMap" type="com.example.entity.Event">
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="time" jdbcType="DATE" property="time" />
-    <result column="level" jdbcType="VARCHAR" property="level" />
-    <result column="clubum" jdbcType="INTEGER" property="clubum" />
-    <result column="status" jdbcType="VARCHAR" property="status" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, `name`, `time`, `level`, clubum, `status`
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from event
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from event
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.example.entity.Event" useGeneratedKeys="true">
-    insert into event (`name`, `time`, `level`, 
-      clubum, `status`)
-    values (#{name,jdbcType=VARCHAR}, #{time,jdbcType=DATE}, #{level,jdbcType=VARCHAR},
-      #{clubum,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.example.entity.Event" useGeneratedKeys="true">
-    insert into event
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="name != null">
-        `name`,
-      </if>
-      <if test="time != null">
-        `time`,
-      </if>
-      <if test="level != null">
-        `level`,
-      </if>
-      <if test="clubum != null">
-        clubum,
-      </if>
-      <if test="status != null">
-        `status`,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="time != null">
-        #{time,jdbcType=DATE},
-      </if>
-      <if test="level != null">
-        #{level,jdbcType=VARCHAR},
-      </if>
-      <if test="clubum != null">
-        #{clubum,jdbcType=INTEGER},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.example.entity.Event">
-    update event
-    <set>
-      <if test="name != null">
-        `name` = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="time != null">
-        `time` = #{time,jdbcType=DATE},
-      </if>
-      <if test="level != null">
-        `level` = #{level,jdbcType=VARCHAR},
-      </if>
-      <if test="clubum != null">
-        clubum = #{clubum,jdbcType=INTEGER},
-      </if>
-      <if test="status != null">
-        `status` = #{status,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.example.entity.Event">
-    update event
-    set `name` = #{name,jdbcType=VARCHAR},
-      `time` = #{time,jdbcType=DATE},
-      `level` = #{level,jdbcType=VARCHAR},
-      clubum = #{clubum,jdbcType=INTEGER},
-      `status` = #{status,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from event
-    where `name` = #{name,jdbcType=VARCHAR}
-  </select>
-  <select id="selectEventClub" parameterType="java.lang.Long" resultType="java.lang.String">
-    SELECT c.club_name
-    FROM event_club ec
-        LEFT JOIN club c
-            ON ec.club_id = c.club_id
-    WHERE ec.event_id = #{id,jdbcType=BIGINT}
-  </select>
-  <insert id="insertEventMatches" parameterType="java.lang.Long" >
-    insert into event_matches (`event_id`, `matches_id`)
-    values (#{event,jdbcType=BIGINT}, #{matches,jdbcType=BIGINT})
-  </insert>
-  <update id="updateEventMatches" parameterType="java.lang.Long">
-    update event_matches
-    set `event_id` = #{event,jdbcType=VARCHAR}
-        where `matches_id` = #{matches,jdbcType=BIGINT}
-  </update>
-  <select id="selectALL" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from event
-    where `level` = #{group,jdbcType=VARCHAR}
-    <if test="name != ''">
-      AND `name` = #{name,jdbcType=VARCHAR}
-    </if>
-  </select>
-  <select id="selectEventClubNum" resultType="java.lang.Integer">
-    select
-           count(*)
-    from event_club
-    where event_id = #{id,jdbcType=BIGINT}
-  </select>
-  <select id="init" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from event
-    where status != "开赛失败"
-    AND status != "已开赛"
-  </select>
-  <select id="selectJoin" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from event
-    where status = "可参加"
-      AND `level` = #{group,jdbcType=VARCHAR}
-    <if test="name != ''">
-      AND name = #{name,jdbcType=VARCHAR}
-    </if>
-  </select>
-  <insert id="insertEventClub" parameterType="java.lang.Long">
-    insert into event_club(`event_id`,`club_id`)
-    values (#{event,jdbcType=BIGINT}, #{club,jdbcType=BIGINT})
-  </insert>
-  <delete id="deleteEventClub" parameterType="java.lang.Long">
-    delete from event_club
-    where `event_id` = #{event,jdbcType=BIGINT}
-    AND `club_id` = #{club,jdbcType=BIGINT}
-  </delete>
-  <select id="selectEvent" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from event
-    where status = "已开赛"
-  </select>
-  <select id="selectEventIdByName" resultType="java.lang.Long">
-    select
+    <resultMap id="BaseResultMap" type="com.example.entity.Event">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="time" jdbcType="DATE" property="time"/>
+        <result column="level" jdbcType="VARCHAR" property="level"/>
+        <result column="clubum" jdbcType="INTEGER" property="clubum"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+    </resultMap>
+    <sql id="Base_Column_List">
         id
-    from event
-    where name = #{event,jdbcType=VARCHAR}
-  </select>
+        , `name`, `time`, `level`, clubum, `status`
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from event
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from event
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.example.entity.Event"
+            useGeneratedKeys="true">
+        insert into event (`name`, `time`, `level`,
+                           clubum, `status`)
+        values (#{name,jdbcType=VARCHAR}, #{time,jdbcType=DATE}, #{level,jdbcType=VARCHAR},
+                #{clubum,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.example.entity.Event"
+            useGeneratedKeys="true">
+        insert into event
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                `name`,
+            </if>
+            <if test="time != null">
+                `time`,
+            </if>
+            <if test="level != null">
+                `level`,
+            </if>
+            <if test="clubum != null">
+                clubum,
+            </if>
+            <if test="status != null">
+                `status`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="time != null">
+                #{time,jdbcType=DATE},
+            </if>
+            <if test="level != null">
+                #{level,jdbcType=VARCHAR},
+            </if>
+            <if test="clubum != null">
+                #{clubum,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.example.entity.Event">
+        update event
+        <set>
+            <if test="name != null">
+                `name` = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="time != null">
+                `time` = #{time,jdbcType=DATE},
+            </if>
+            <if test="level != null">
+                `level` = #{level,jdbcType=VARCHAR},
+            </if>
+            <if test="clubum != null">
+                clubum = #{clubum,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                `status` = #{status,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.example.entity.Event">
+        update event
+        set `name`   = #{name,jdbcType=VARCHAR},
+            `time`   = #{time,jdbcType=DATE},
+            `level`  = #{level,jdbcType=VARCHAR},
+            clubum   = #{clubum,jdbcType=INTEGER},
+            `status` = #{status,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from event
+        where `name` = #{name,jdbcType=VARCHAR}
+    </select>
+    <select id="selectEventClub" parameterType="java.lang.Long" resultType="java.lang.String">
+        SELECT c.club_name
+        FROM event_club ec
+                 LEFT JOIN club c
+                           ON ec.club_id = c.club_id
+        WHERE ec.event_id = #{id,jdbcType=BIGINT}
+    </select>
+    <insert id="insertEventMatches" parameterType="java.lang.Long">
+        insert into event_matches (`event_id`, `matches_id`)
+        values (#{event,jdbcType=BIGINT}, #{matches,jdbcType=BIGINT})
+    </insert>
+    <update id="updateEventMatches" parameterType="java.lang.Long">
+        update event_matches
+        set `event_id` = #{event,jdbcType=VARCHAR}
+        where `matches_id` = #{matches,jdbcType=BIGINT}
+    </update>
+    <select id="selectALL" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from event
+        where `level` = #{group,jdbcType=VARCHAR}
+        <if test="name != ''">
+            AND `name` = #{name,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <select id="selectEventClubNum" resultType="java.lang.Integer">
+        select count(*)
+        from event_club
+        where event_id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="init" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from event
+        where status != "开赛失败"
+        AND status != "已开赛"
+    </select>
+    <select id="selectJoin" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from event
+        where status = "可参加"
+        AND `level` = #{group,jdbcType=VARCHAR}
+        <if test="name != ''">
+            AND name = #{name,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <insert id="insertEventClub" parameterType="java.lang.Long">
+        insert into event_club(`event_id`, `club_id`)
+        values (#{event,jdbcType=BIGINT}, #{club,jdbcType=BIGINT})
+    </insert>
+    <delete id="deleteEventClub" parameterType="java.lang.Long">
+        delete
+        from event_club
+        where `event_id` = #{event,jdbcType=BIGINT}
+          AND `club_id` = #{club,jdbcType=BIGINT}
+    </delete>
+    <select id="selectEvent" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from event
+        where status = "已开赛"
+    </select>
+    <select id="selectEventIdByName" resultType="java.lang.Long">
+        select id
+        from event
+        where name = #{event,jdbcType=VARCHAR}
+    </select>
+    <select id="selectUserEvent" resultMap="BaseResultMap">
+        select e.*
+        from event e
+        LEFT JOIN user_event ue
+        on ue.event_id =e.id
+        where ue.user_id = #{user,jdbcType=BIGINT}
+        AND e.`level` = #{group,jdbcType=VARCHAR}
+        <if test="name != ''">
+            AND e.name = #{name,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <select id="selectUserJoin" resultMap="BaseResultMap">
+        select e.*
+        from event e
+        LEFT JOIN user_event ue
+        on ue.event_id =e.id
+        where e.status = "可参加"
+        AND ue.user_id = #{user,jdbcType=BIGINT}
+        AND `level` = #{group,jdbcType=VARCHAR}
+        <if test="name != ''">
+            AND name = #{name,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <insert id="insertUserEvent" parameterType="java.lang.Long">
+        insert into user_event(`user_id`, `event_id`)
+        values (#{user,jdbcType=BIGINT}, #{event,jdbcType=BIGINT})
+    </insert>
+    <delete id="deleteUserEvent" parameterType="java.lang.Long">
+        delete
+        from user_event
+        where `user_id` = #{user,jdbcType=BIGINT}
+          AND `event_id` = #{event,jdbcType=BIGINT}
+    </delete>
+    <select id="selectNotUserEvent" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from event
+        where
+        NOT EXISTS
+        (select 1
+        from user_event ue
+        LEFT JOIN event e
+        on ue.event_id =e.id
+        where e.id = event.id)
+        AND `level` = #{group,jdbcType=VARCHAR}
+        <if test="name != ''">
+            AND name = #{name,jdbcType=VARCHAR}
+        </if>
+    </select>
 </mapper>

@@ -1,10 +1,346 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8"/>
+    <title>参赛管理</title>
+    <link rel="stylesheet" href="../css/element.css"/>
+    <link rel="stylesheet" href="../css/base.css"/>
 </head>
 <body>
-invite
+<div id="wrapper" v-cloak>
+    <el-tabs v-model="group" @tab-click="handleClick" stretch>
+        <el-tab-pane label="Major" name="Major">
+            <div>
+                <el-input
+                        v-model="search"
+                        style="width: 20%"
+                        suffix-icon="el-icon-search"
+                        placeholder="请输入赛事名搜索"
+                ></el-input>
+                <el-button @click="loadTable" type="primary" style="margin: 5px 0"
+                >查询
+                </el-button
+                >
+            </div>
+            <el-table :data="tableData" border style="width: 100%">
+                <el-table-column prop="name" label="赛事名"></el-table-column>
+                <el-table-column prop="time" label="开始时间"></el-table-column>
+                <el-table-column prop="status" label="状态"></el-table-column>
+                <el-table-column
+                        prop="clubum"
+                        label="俱乐部数量"
+                        sortable
+                ></el-table-column>
+                <el-table-column fixed="right" label="操作" width="150">
+                    <template slot-scope="scope">
+                        <el-button
+                                type="primary"
+                                @click="edit(scope.row.id)"
+                                icon="el-icon-edit"
+                                circle
+                        ></el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <!-- 分页 -->
+            <div style="background-color: white; padding: 10px 0">
+                <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="pageNum"
+                        :page-size="pageSize"
+                        layout="total, prev, pager, next, jumper"
+                        :total="total"
+                >
+                </el-pagination>
+            </div>
+        </el-tab-pane>
+        <el-tab-pane label="Minor" name="Minor">
+            <div>
+                <el-input
+                        v-model="search"
+                        style="width: 20%"
+                        suffix-icon="el-icon-search"
+                        placeholder="请输入赛事名搜索"
+                ></el-input>
+                <el-button @click="loadTable" type="primary" style="margin: 5px 0"
+                >查询
+                </el-button
+                >
+            </div>
+            <el-table :data="tableData" border style="width: 100%">
+                <el-table-column prop="name" label="赛事名"></el-table-column>
+                <el-table-column prop="time" label="开始时间"></el-table-column>
+                <el-table-column prop="status" label="状态"></el-table-column>
+                <el-table-column
+                        prop="clubum"
+                        label="俱乐部数量"
+                        sortable
+                ></el-table-column>
+                <el-table-column fixed="right" label="操作" width="150">
+                    <template slot-scope="scope">
+                        <el-button
+                                type="primary"
+                                @click="edit(scope.row.id)"
+                                icon="el-icon-edit"
+                                circle
+                        ></el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <!-- 分页 -->
+            <div style="background-color: white; padding: 10px 0">
+                <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="pageNum"
+                        :page-size="pageSize"
+                        layout="total, prev, pager, next, jumper"
+                        :total="total"
+                >
+                </el-pagination>
+            </div>
+        </el-tab-pane>
+    </el-tabs>
+    <el-dialog title="已选俱乐部" :visible.sync="dialogFormVisible" width="50%"
+               :close-on-click-modal="false">
+        <el-button @click="select" type="primary" style="margin-bottom: 5px"
+        >新增
+        </el-button
+        >
+        <el-table :data="joinclub" border style="width: 100%" max-height="300">
+            <el-table-column prop="clubImg" label="队标">
+                <template slot-scope="scope">
+                    <div style="background-color: #303133; vertical-align: middle">
+                        <img
+                                :src="scope.row.clubImg"
+                                style="width: 30%; height: 30%; margin: 0 35%"
+                        />
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="clubName" label="俱乐部名"></el-table-column>
+            <el-table-column prop="clubCoach" label="俱乐部教练"></el-table-column>
+            <el-table-column fixed="right" label="操作" width="150">
+                <template slot-scope="scope">
+                    <el-popconfirm
+                            @onConfirm="del(scope.row.clubId)"
+                            title="确定删除？"
+                    >
+                        <el-button
+                                type="danger"
+                                icon="el-icon-delete"
+                                circle
+                                slot="reference"
+                        ></el-button>
+                    </el-popconfirm>
+                </template>
+            </el-table-column>
+        </el-table>
+    </el-dialog>
+    <el-dialog title="可选俱乐部" :visible.sync="dialogSelect" width="40%"
+               :close-on-click-modal="false">
+        <el-table :data="selected" border style="width: 100%" max-height="300">
+            <el-table-column prop="clubImg" label="队标">
+                <template slot-scope="scope">
+                    <div style="background-color: #303133; vertical-align: middle">
+                        <img
+                                :src="scope.row.clubImg"
+                                style="width: 30%; height: 30%; margin: 0 35%"
+                        />
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="clubName" label="俱乐部名"></el-table-column>
+            <el-table-column prop="clubCoach" label="俱乐部教练"></el-table-column>
+            <el-table-column fixed="right" label="操作" width="150">
+                <template slot-scope="scope">
+                    <el-button
+                            type="primary"
+                            @click="add(scope.row.clubId)"
+                            icon="el-icon-plus"
+                            circle
+                    ></el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </el-dialog>
+</div>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/vue.js"></script>
+<script src="../js/element.js"></script>
+
+<script>
+    let vm = new Vue({
+        el: "#wrapper",
+        data: {
+            tableData: [],
+            joinclub: [],
+            selected: [],
+            event: 0,
+            pageNum: 1,
+            pageSize: 4,
+            total: 0,
+            group: "Major",
+            clubGroup: "S",
+            search: '',
+            dialogFormVisible: false,
+            dialogSelect: false,
+            pageNo: 4,
+
+        },
+        created() {
+            this.loadTable();
+        },
+        methods: {
+            loadTable() {
+                if (!this.search) {
+                    $.get(
+                        "/event/userJoin?pageNum=" +
+                        this.pageNum +
+                        "&pageSize=" +
+                        this.pageSize +
+                        "&group=" +
+                        this.group
+                    ).then((res) => {
+                        if (res.code === 0) {
+                            this.tableData = res.data.list;
+                            this.total = res.data.total;
+                            console.log(this.total)
+                        } else {
+                            this.tableData = [];
+                            this.total = 0;
+                        }
+                    });
+                } else {
+                    $.get(
+                        "/event/userJoin?pageNum=" +
+                        this.pageNum +
+                        "&pageSize=" +
+                        this.pageSize +
+                        "&group=" +
+                        this.group +
+                        "&name=" +
+                        this.search
+                    ).then((res) => {
+                        if (res.code === 0) {
+                            this.tableData = res.data.list;
+                            this.total = res.data.total;
+                            console.log(this.total)
+                        } else {
+                            this.tableData = [];
+                            this.total = 0;
+                        }
+                    });
+                }
+            },
+            handleSizeChange(pageSize) {
+                this.pageSize = pageSize;
+                this.loadTable();
+            },
+            handleCurrentChange(pageNum) {
+                this.pageNum = pageNum;
+                this.loadTable();
+            },
+            handleClick(tabs) {
+                this.group = tabs.name;
+                if(this.group === "Major"){
+                    this.clubGroup = "S"
+                }else{
+                    this.clubGroup = "A"
+                }
+                this.search = null;
+                this.loadTable();
+            },
+            edit(obj) {
+                this.event = obj
+                $.get(
+                    "/club/eventClub/" +
+                    obj
+                ).then((res) => {
+                    if (res.code === 0) {
+                        this.joinclub = res.data;
+                    } else {
+                        this.joinclub = [];
+                    }
+                });
+                this.dialogFormVisible = true;
+            },
+            del(obj) {
+                console.log(obj)
+                $.ajax({
+                    url: "/event/eventClub?eventId=" +
+                        this.event +
+                        "&clubId=" +
+                        obj,
+                    type: 'DELETE',
+                }).then((res) => {
+                    if (res.code === 0) {
+                        this.$message({
+                            message: "删除成功",
+                            type: "success"
+                        });
+                        this.dialogFormVisible = false;
+                        this.loadTable();
+                    } else {
+                        this.$message({
+                            message: res.message,
+                            type: "error"
+                        })
+                    }
+                })
+            },
+            add(obj) {
+                console.log(obj,this.event)
+                $.ajax({
+                    url: "/event/eventClub?eventId=" +
+                        this.event +
+                        "&clubId=" +
+                        obj,
+                    type: 'PUT',
+                }).then((res) => {
+                    if (res.code === 0) {
+                        this.$message({
+                            message: "保存成功",
+                            type: "success"
+                        });
+                        this.loadTable();
+                    } else {
+                        this.$message({
+                            message: res.message,
+                            type: "error"
+                        })
+                    }
+                    this.dialogSelect = false;
+                    this.dialogFormVisible = false;
+                    this.loadTable();
+                })
+            },
+            select() {
+                this.dialogSelect = true;
+                $.get(
+                    "/club/ALL?group=" +
+                    this.clubGroup
+                ).then((res) => {
+                    if (res.code === 0) {
+                        this.selected = this.RemoveSameItem(this.joinclub,res.data)
+                    } else {
+                        this.selected = [];
+                    }
+                })
+            },
+            RemoveSameItem(listOne, listTwo) {
+                for( let c1 in listOne ){
+                    for(let c2 in listTwo){
+                        if(listOne[c1].clubId === listTwo[c2].clubId){
+                            listTwo.splice(c2,1)
+                        }
+                    }
+                }
+                return listTwo;
+            }
+        },
+    });
+</script>
 </body>
 </html>

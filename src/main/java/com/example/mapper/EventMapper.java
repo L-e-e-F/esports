@@ -1,5 +1,6 @@
 package com.example.mapper;
 
+import com.example.entity.Club;
 import com.example.entity.Event;
 import com.github.pagehelper.Page;
 
@@ -42,4 +43,14 @@ public interface EventMapper {
     void updateEventMatches(Long event, Long matches);
 
     Long selectEventIdByName(String event);
+
+    Page<Event> selectUserEvent(Long user,String group,String name);
+
+    Page<Event> selectUserJoin(Long user,String group,String name);
+
+    void insertUserEvent(Long user, Long event);
+
+    Page<Club> selectNotUserEvent(String group, String name);
+
+    void deleteUserEvent(Long user, Long event);
 }

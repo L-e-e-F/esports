@@ -1,5 +1,6 @@
 package com.example.service.impl;
 
+import com.example.entity.Club;
 import com.example.entity.Event;
 import com.example.enums.EventState;
 import com.example.mapper.EventMapper;
@@ -132,6 +133,31 @@ public class EventServiceImp implements EventService {
     @Override
     public Long selectEventIdByName(String event) {
         return eventMapper.selectEventIdByName(event);
+    }
+
+    @Override
+    public Page<Event> selectUserEvent(Long user, String group, String name) {
+        return eventMapper.selectUserEvent(user,group,name);
+    }
+
+    @Override
+    public void insertUserEvent(Long user, Long event) {
+        eventMapper.insertUserEvent(user,event);
+    }
+
+    @Override
+    public Page<Club> selectNotUserEvent(String group, String name) {
+        return eventMapper.selectNotUserEvent(group,name);
+    }
+
+    @Override
+    public void deleteUserEvent(Long user, Long event) {
+        eventMapper.deleteUserEvent(user,event);
+    }
+
+    @Override
+    public Page<Event> selectUserJoin(Long user, String group, String name) {
+        return eventMapper.selectUserJoin(user,group,name);
     }
 
 

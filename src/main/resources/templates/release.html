@@ -1,10 +1,344 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8"/>
+    <title>赛事管理</title>
+    <link rel="stylesheet" href="../css/element.css"/>
+    <link rel="stylesheet" href="../css/base.css"/>
 </head>
 <body>
-release
+<div id="wrapper" v-cloak>
+    <el-tabs v-model="group" @tab-click="handleClick" stretch>
+        <el-tab-pane label="Major" name="Major">
+            <div>
+                <el-input
+                        v-model="search"
+                        style="width: 20%"
+                        suffix-icon="el-icon-search"
+                        placeholder="请输入赛事名搜索"
+                ></el-input>
+                <el-button @click="loadTable" type="primary" style="margin: 5px 0"
+                >查询
+                </el-button
+                >
+                <el-button @click="add" type="primary" style="margin: 5px 0"
+                >新增
+                </el-button
+                >
+            </div>
+            <el-table :data="tableData" border style="width: 100%">
+                <el-table-column prop="name" label="赛事名"></el-table-column>
+                <el-table-column prop="time" label="开始时间"></el-table-column>
+                <el-table-column prop="status" label="状态"></el-table-column>
+                <el-table-column
+                        prop="clubum"
+                        label="俱乐部数量"
+                        sortable
+                ></el-table-column>
+                <el-table-column fixed="right" label="操作" width="150">
+                    <template slot-scope="scope">
+                        <el-button
+                                type="primary"
+                                @click="edit(scope.row)"
+                                icon="el-icon-edit"
+                                circle
+                        ></el-button>
+                        <el-popconfirm
+                                @onConfirm="del(scope.row.id)"
+                                title="确定卖出？"
+                        >
+                            <el-button
+                                    type="danger"
+                                    icon="el-icon-delete"
+                                    circle
+                                    slot="reference"
+                            ></el-button>
+                        </el-popconfirm>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <!-- 分页 -->
+            <div style="background-color: white; padding: 10px 0">
+                <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="pageNum"
+                        :page-size="pageSize"
+                        layout="total, prev, pager, next, jumper"
+                        :total="total"
+                >
+                </el-pagination>
+            </div>
+        </el-tab-pane>
+        <el-tab-pane label="Minor" name="Minor">
+            <div>
+                <el-input
+                        v-model="search"
+                        style="width: 20%"
+                        suffix-icon="el-icon-search"
+                        placeholder="请输入赛事名搜索"
+                ></el-input>
+                <el-button @click="loadTable" type="primary" style="margin: 5px 0"
+                >查询
+                </el-button
+                >
+                <el-button @click="add" type="primary" style="margin: 5px 0"
+                >新增
+                </el-button
+                >
+            </div>
+            <el-table :data="tableData" border style="width: 100%">
+                <el-table-column prop="name" label="赛事名"></el-table-column>
+                <el-table-column prop="time" label="开始时间"></el-table-column>
+                <el-table-column prop="status" label="状态"></el-table-column>
+                <el-table-column
+                        prop="clubum"
+                        label="俱乐部数量"
+                        sortable
+                ></el-table-column>
+                <el-table-column fixed="right" label="操作" width="150">
+                    <template slot-scope="scope">
+                        <el-button
+                                type="primary"
+                                @click="edit(scope.row)"
+                                icon="el-icon-edit"
+                                circle
+                        ></el-button>
+                        <el-popconfirm
+                                @onConfirm="del(scope.row.id)"
+                                title="确定卖出？"
+                        >
+                            <el-button
+                                    type="danger"
+                                    icon="el-icon-delete"
+                                    circle
+                                    slot="reference"
+                            ></el-button>
+                        </el-popconfirm>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <!-- 分页 -->
+            <div style="background-color: white; padding: 10px 0">
+                <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="pageNum"
+                        :page-size="pageSize"
+                        layout="total, prev, pager, next, jumper"
+                        :total="total"
+                >
+                </el-pagination>
+            </div>
+        </el-tab-pane>
+    </el-tabs>
+    <el-dialog title="赛事信息" :visible.sync="dialogFormVisible" width="40%"
+               :close-on-click-modal="false">
+        <el-form :model="entity">
+            <el-form-item label="赛事级别" label-width="100px">
+                <el-input
+                        v-model="entity.level"
+                        :disabled="true"
+                        style="width: 80%">
+                </el-input>
+            </el-form-item>
+            <el-form-item label="赛事名" label-width="100px">
+                <el-input v-model="entity.name" autocomplete="off" style="width: 80%"></el-input>
+            </el-form-item>
+            <el-form-item label="开始时间" label-width="100px">
+                <el-date-picker clearable style="width: 80%" v-model="entity.time" type="date" value-format="yyyy-MM-dd"
+                                placeholder="选择日期时间"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="俱乐部数量" label-width="100px">
+                <el-input v-model="entity.clubum" autocomplete="off" style="width: 80%"></el-input>
+            </el-form-item>
+            <el-form-item v-if="entity.status === '等待开赛'" label="开赛" label-width="100px">
+                <el-button size="small" type="primary" @click="start(entity.name)">点击开赛</el-button>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="save">确 定</el-button>
+        </div>
+    </el-dialog>
+</div>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/vue.js"></script>
+<script src="../js/element.js"></script>
+
+<script>
+    let vm = new Vue({
+        el: "#wrapper",
+        data: {
+            tableData: [],
+            entity: {},
+            pageNum: 1,
+            pageSize: 10,
+            total: 0,
+            group: "Major",
+            search: '',
+            dialogFormVisible: false,
+        },
+        created() {
+            this.loadTable();
+        },
+        methods: {
+            loadTable() {
+                console.log(typeof (this.search))
+                if (!this.search) {
+                    $.get(
+                        "/event/user?pageNum=" +
+                        this.pageNum +
+                        "&pageSize=" +
+                        this.pageSize +
+                        "&group=" +
+                        this.group
+                    ).then((res) => {
+                        if (res.code === 0) {
+                            this.tableData = res.data.list;
+                            this.total = res.data.total;
+                            console.log(this.total)
+                        } else {
+                            this.tableData = [];
+                            this.total = 0;
+                        }
+                    });
+                } else {
+                    $.get(
+                        "/event/user?pageNum=" +
+                        this.pageNum +
+                        "&pageSize=" +
+                        this.pageSize +
+                        "&group=" +
+                        this.group +
+                        "&name=" +
+                        this.search
+                    ).then((res) => {
+                        if (res.code === 0) {
+                            this.tableData = res.data.list;
+                            this.total = res.data.total;
+                            console.log(this.total)
+                        } else {
+                            this.tableData = null;
+                            this.total = null;
+                        }
+                    });
+                }
+            },
+            handleSizeChange(pageSize) {
+                this.pageSize = pageSize;
+                this.loadTable();
+            },
+            handleCurrentChange(pageNum) {
+                this.pageNum = pageNum;
+                this.loadTable();
+            },
+            handleClick(tabs) {
+                this.group = tabs.name;
+                this.search = null;
+                this.loadTable();
+            },
+            add() {
+                this.entity = {}
+                this.entity.level = this.group;
+                this.dialogFormVisible = true;
+            },
+            edit(obj) {
+                console.log(obj)
+                this.entity = JSON.parse(JSON.stringify(obj));
+                this.dialogFormVisible = true;
+            },
+            start(obj) {
+                console.log(obj)
+                $.ajax({
+                    url: "/event/AddMatches?EventName=" + obj,
+                    type: 'POST'
+                }).then((res) => {
+                    if (res.code === 0) {
+                        this.$message({
+                            message: "开赛成功",
+                            type: "success"
+                        });
+                        this.loadTable();
+                    } else {
+                        this.$message({
+                            message: res.message,
+                            type: "error"
+                        })
+                    }
+                })
+                this.dialogFormVisible = false;
+
+            },
+            del(obj) {
+                console.log(obj)
+                $.ajax({
+                    url: "/event/userSet/" + obj,
+                    type: 'DELETE',
+                    contentType: "application/json"
+                }).then((res) => {
+                    if (res.code === 0) {
+                        this.$message({
+                            message: "卖出成功",
+                            type: "success"
+                        });
+                        this.loadTable();
+                    } else {
+                        this.$message({
+                            message: res.message,
+                            type: "error"
+                        })
+                    }
+                })
+            },
+            save() {
+                console.log(this.entity)
+                if (!this.entity.name) {
+                    this.$message({
+                        message: "请填写赛事名",
+                        type: "warning"
+                    })
+                    return;
+                }
+                if (!this.entity.time) {
+                    this.$message({
+                        message: "请填写赛事时间",
+                        type: "warning"
+                    })
+                    return;
+                }
+                if (!this.entity.clubum || this.entity.clubum < 2) {
+                    this.$message({
+                        message: "请规范填写俱乐部数量，不能小于两个",
+                        type: "warning"
+                    })
+                    return;
+                }
+                let url = this.entity.id ? "/event/set" : "/event/userSet";
+                let type = this.entity.id ? "PUT" : "POST";
+                $.ajax({
+                    url: url,
+                    type: type,
+                    contentType: "application/json",
+                    data: JSON.stringify(this.entity)
+                }).then((res) => {
+                    if (res.code === 0) {
+                        this.$message({
+                            message: "保存成功",
+                            type: "success"
+                        });
+                        this.loadTable();
+                    } else {
+                        this.$message({
+                            message: res.message,
+                            type: "error"
+                        })
+                    }
+                    this.dialogFormVisible = false;
+                })
+            }
+        },
+    });
+</script>
 </body>
 </html>
