@@ -126,6 +126,11 @@ public class EventServiceImp implements EventService {
     }
 
     @Override
+    public List<Event> selectUserEventName(Long user) {
+        return eventMapper.selectUserEventName(user);
+    }
+
+    @Override
     public void updateEventMatches(Long event, Long matches) {
         eventMapper.updateEventMatches(event,matches);
     }

@@ -22,4 +22,6 @@ public interface MatchesService {
     int deleteByPrimaryKey(Long id);
 
     Page<Matches> selectFollow(Long user,String club,String name);
+
+    Page<Matches> selectUser(Long user,String club,String name);
 }

@@ -82,6 +82,13 @@ public class EventController {
         return Result.SuccessResult(event);
     }
 
+    @GetMapping("/UserName")
+    public Result<?> getUserName() {
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        List<Event> event = eventService.selectUserEventName(user.getUserId());
+        return Result.SuccessResult(event);
+    }
+
     @GetMapping("/NotUser")
     public Result<?> NotUser(@RequestParam(required = false, defaultValue = "1") Integer pageNum,
                              @RequestParam(required = false, defaultValue = "4") Integer pageSize,

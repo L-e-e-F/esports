@@ -74,4 +74,9 @@ public class MatchesServiceImp implements MatchesService {
     public Page<Matches> selectFollow(Long user,String club, String name) {
         return matchesMapper.selectFollow(user,club,name);
     }
+
+    @Override
+    public Page<Matches> selectUser(Long user, String club, String name) {
+        return matchesMapper.selectUser(user,club,name);
+    }
 }

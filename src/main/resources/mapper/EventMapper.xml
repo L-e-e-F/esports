@@ -184,6 +184,14 @@
             AND e.name = #{name,jdbcType=VARCHAR}
         </if>
     </select>
+    <select id="selectUserEventName" resultMap="BaseResultMap">
+        select e.*
+        from event e
+                 LEFT JOIN user_event ue
+                           on ue.event_id = e.id
+        where ue.user_id = #{user,jdbcType=BIGINT}
+          AND e.status = "已开赛"
+    </select>
     <select id="selectUserJoin" resultMap="BaseResultMap">
         select e.*
         from event e

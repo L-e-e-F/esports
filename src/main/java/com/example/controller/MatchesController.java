@@ -55,6 +55,19 @@ public class MatchesController {
         return Result.SuccessResult(page);
     }
 
+    @GetMapping("/user")
+    public Result<?> user(@RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                            @RequestParam(required = false, defaultValue = "4") Integer pageSize,
+                            @RequestParam(required = false, defaultValue = "") String club,
+                            @RequestParam(required = false, defaultValue = "") String name){
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        PageHelper.startPage(pageNum, pageSize);
+        PageInfo page = new PageInfo(matchesService.selectUser(user.getUserId(),club,name));
+        if(page.getTotal() == 0)
+            return Result.ErrorResult(ResultCode.ERROR_MATCHES);
+        return Result.SuccessResult(page);
+    }
+
     @GetMapping("/time")
     public Result<?> selectALLByTime(@RequestParam Integer pageNum, @RequestParam Integer pageSize){
         PageHelper.startPage(pageNum,pageSize);

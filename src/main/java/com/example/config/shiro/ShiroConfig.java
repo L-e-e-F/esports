@@ -92,8 +92,10 @@ public class ShiroConfig {
         filterMap.put("/event/userSet/**","roles[ROLE_CHAMPIONSHIP]");
         filterMap.put("/event/contract","roles[ROLE_CHAMPIONSHIP]");
         filterMap.put("/event/eventClub/**","roles[ROLE_ADMIN,ROLE_CHAMPIONSHIP,ROLE_CLUB]");
+        filterMap.put("/event/UserName","roles[ROLE_CHAMPIONSHIP]");
         filterMap.put("/matches/follow","roles[ROLE_USER]");
-        filterMap.put("/matches/set/**","roles[ROLE_ADMIN]");
+        filterMap.put("/matches/set/**","roles[ROLE_ADMIN,ROLE_CHAMPIONSHIP]");
+        filterMap.put("/matches/user","roles[ROLE_CHAMPIONSHIP]");
         filterMap.put("/player/userClubAll","roles[ROLE_CLUB]");
         filterMap.put("/player/set/**","roles[ROLE_ADMIN,ROLE_CLUB]");
         filterMap.put("/user/all","roles[ROLE_ADMIN]");

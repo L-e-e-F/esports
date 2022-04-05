@@ -40,6 +40,8 @@ public interface EventMapper {
 
     List<Event> selectEvent();
 
+    List<Event> selectUserEventName(Long user);
+
     void updateEventMatches(Long event, Long matches);
 
     Long selectEventIdByName(String event);

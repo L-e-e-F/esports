@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>比赛管理</title>
+    <link rel="stylesheet" href="../css/element.css"/>
+    <link rel="stylesheet" href="../css/base.css"/>
+</head>
+<body>
+<div id="wrapper" v-cloak>
+    <div>
+        <el-input
+                v-model="searchClub"
+                style="width: 20%"
+                suffix-icon="el-icon-search"
+                placeholder="请输入俱乐部名搜索"
+        ></el-input>
+        <el-input
+                v-model="searchName"
+                style="width: 20%"
+                suffix-icon="el-icon-search"
+                placeholder="请输入赛事名搜索"
+        ></el-input>
+        <el-button @click="loadTable" type="primary" style="margin: 5px 0"
+        >查询
+        </el-button
+        >
+        <el-button @click="add" type="primary" style="margin: 5px 0"
+        >新增
+        </el-button
+        >
+    </div>
+    <el-table :data="tableData" border style="width: 100%">
+        <el-table-column
+                prop="time"
+                label="时间"
+                width="120"
+                sortable
+        ></el-table-column>
+        <el-table-column prop="homeTeam" label="主队"></el-table-column>
+        <el-table-column prop="visitingTeam" label="客队"></el-table-column>
+        <el-table-column prop="name" label="赛事名"></el-table-column>
+        <el-table-column prop="result" label="结果"></el-table-column>
+        <el-table-column fixed="right" label="操作" width="150">
+            <template slot-scope="scope">
+                <el-button
+                        type="primary"
+                        @click="edit(scope.row)"
+                        icon="el-icon-edit"
+                        circle
+                ></el-button>
+                <el-popconfirm
+                        @onConfirm="del(scope.row.id)"
+                        title="确定删除？"
+                >
+                    <el-button
+                            type="danger"
+                            icon="el-icon-delete"
+                            circle
+                            slot="reference"
+                    ></el-button>
+                </el-popconfirm>
+            </template>
+        </el-table-column>
+    </el-table>
+    <!-- 分页 -->
+    <div style="background-color: white; padding: 10px 0">
+        <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="pageNum"
+                :page-size="pageSize"
+                layout="total, prev, pager, next, jumper"
+                :total="total"
+        >
+        </el-pagination>
+    </div>
+    <el-dialog title="比赛信息" :visible.sync="dialogFormVisible" width="40%"
+               :close-on-click-modal="false">
+        <el-form :model="entity">
+            <el-form-item label="赛事名" label-width="100px">
+                <el-select
+                        v-model="entity.name"
+                        style="width: 80%;"
+                        placeholder="请选择赛事名"
+                >
+                    <el-option
+                            v-for="item in event"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.name"
+                    >
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="主队名" label-width="100px">
+                <el-select
+                        v-model="entity.homeTeam"
+                        style="width: 80%;"
+                        placeholder="请选择主队"
+                >
+                    <el-option
+                            v-for="item in club"
+                            :key="item.clubId"
+                            :label="item.clubName"
+                            :value="item.clubName"
+                    >
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="客队名" label-width="100px">
+                <el-select
+                        v-model="entity.visitingTeam"
+                        style="width: 80%;"
+                        placeholder="请选择客队"
+                >
+                    <el-option
+                            v-for="item in club"
+                            :key="item.clubId"
+                            :label="item.clubName"
+                            :value="item.clubName"
+                    >
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="时间" label-width="100px">
+                <el-date-picker clearable style="width: 80%" v-model="entity.time" type="date" value-format="yyyy-MM-dd"
+                                placeholder="选择日期时间"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="结果" label-width="100px" v-if="entity.id != null">
+                <el-select v-model="entity.result" placeholder="请选择">
+                    <el-option
+                            v-for="item in result"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.label"
+                    >
+                    </el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="save">确 定</el-button>
+        </div>
+    </el-dialog>
+</div>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/vue.js"></script>
+<script src="../js/element.js"></script>
+
+<script>
+    let vm = new Vue({
+        el: "#wrapper",
+        data: {
+            tableData: [],
+            entity: {},
+            event: [],
+            club: [],
+            pageNum: 1,
+            pageSize: 10,
+            total: 0,
+            searchClub: '',
+            searchName: '',
+            dialogFormVisible: false,
+            result: [
+                {
+                    value: '0',
+                    label: '未出结果'
+                },
+                {
+                    value: '1',
+                    label: '主队胜利'
+                },
+                {
+                    value: '2',
+                    label: '客队胜利'
+                }
+            ]
+        },
+        created() {
+            this.loadTable();
+        },
+        methods: {
+            loadTable() {
+                if (!this.searchClub && !this.searchName) {
+                    $.get(
+                        "/matches/user?pageNum=" +
+                        this.pageNum +
+                        "&pageSize=" +
+                        this.pageSize
+                    ).then((res) => {
+                        if (res.code === 0) {
+                            this.tableData = res.data.list;
+                            this.total = res.data.total;
+                            console.log(this.total)
+                        } else {
+                            this.tableData = [];
+                            this.total = 0;
+                        }
+                    });
+                } else {
+                    $.get(
+                        "/matches/user?pageNum=" +
+                        this.pageNum +
+                        "&pageSize=" +
+                        this.pageSize +
+                        "&club=" +
+                        this.searchClub +
+                        "&name=" +
+                        this.searchName
+                    ).then((res) => {
+                        if (res.code === 0) {
+                            this.tableData = res.data.list;
+                            this.total = res.data.total;
+                            console.log(this.total)
+                        } else {
+                            this.tableData = [];
+                            this.total = 0;
+                        }
+                    });
+                }
+                if (this.searchClub) {
+                    $.get(
+                        "/matches/user?pageNum=" +
+                        this.pageNum +
+                        "&pageSize=" +
+                        this.pageSize +
+                        "&club=" +
+                        this.searchClub
+                    ).then((res) => {
+                        if (res.code === 0) {
+                            this.tableData = res.data.list;
+                            this.total = res.data.total;
+                            console.log(this.total)
+                        } else {
+                            this.tableData = [];
+                            this.total = 0;
+                        }
+                    });
+                }
+                if (this.searchName) {
+                    $.get(
+                        "/matches/user?pageNum=" +
+                        this.pageNum +
+                        "&pageSize=" +
+                        this.pageSize +
+                        "&name=" +
+                        this.searchName
+                    ).then((res) => {
+                        if (res.code === 0) {
+                            this.tableData = res.data.list;
+                            this.total = res.data.total;
+                            console.log(this.total)
+                        } else {
+                            this.tableData = [];
+                            this.total = 0;
+                        }
+                    });
+                }
+            },
+            handleSizeChange(pageSize) {
+                this.pageSize = pageSize;
+                this.loadTable();
+            },
+            handleCurrentChange(pageNum) {
+                this.pageNum = pageNum;
+                this.loadTable();
+            },
+            add() {
+                $.get(
+                    "/event/UserName"
+                ).then((res) => {
+                    this.event = res.data;
+                })
+                $.get(
+                    "/club/ALL"
+                ).then((res) => {
+                    this.club = res.data;
+                })
+
+                this.entity = {}
+                this.dialogFormVisible = true;
+            },
+            edit(obj) {
+                $.get(
+                    "/event/UserName"
+                ).then((res) => {
+                    this.event = res.data;
+                })
+                $.get(
+                    "/club/ALL"
+                ).then((res) => {
+                    this.club = res.data;
+                })
+                this.entity = JSON.parse(JSON.stringify(obj));
+                this.dialogFormVisible = true;
+            },
+            del(obj) {
+                $.ajax({
+                    url: "/matches/set/" + obj,
+                    type: 'DELETE'
+                }).then((res) => {
+                    if (res.code === 0) {
+                        this.$message({
+                            message: "删除成功",
+                            type: "success"
+                        });
+                        this.loadTable();
+                    } else {
+                        this.$message({
+                            message: res.message,
+                            type: "error"
+                        })
+                    }
+                })
+            },
+            save() {
+                if (!this.entity.name) {
+                    this.$message({
+                        message: "请填写赛事名",
+                        type: "warning"
+                    })
+                    return;
+                }
+                if (!this.entity.homeTeam) {
+                    this.$message({
+                        message: "请填写主队俱乐部名",
+                        type: "warning"
+                    })
+                    return;
+                }
+                if (!this.entity.visitingTeam) {
+                    this.$message({
+                        message: "请填写客队俱乐部名",
+                        type: "warning"
+                    })
+                    return;
+                }
+                if (!this.entity.time) {
+                    this.$message({
+                        message: "请填写比赛时间",
+                        type: "warning"
+                    })
+                    return;
+                }
+                if (this.entity.homeTeam === this.entity.visitingTeam) {
+                    this.$message({
+                        message: "主队和客队名不能相同",
+                        type: "warning"
+                    })
+                    return;
+                }
+                console.log(this.entity)
+                let type = this.entity.id ? "PUT" : "POST";
+                if(!this.entity.id){
+                    this.entity.result = "未出结果"
+                }
+                $.ajax({
+                    url: "/matches/set/",
+                    type: type,
+                    contentType: "application/json",
+                    data: JSON.stringify(this.entity)
+                }).then((res) => {
+                    if (res.code === 0) {
+                        this.$message({
+                            message: "保存成功",
+                            type: "success"
+                        });
+                        this.loadTable();
+                    } else {
+                        this.$message({
+                            message: res.message,
+                            type: "error"
+                        })
+                    }
+                    this.dialogFormVisible = false;
+                })
+            }
+        },
+    })
+</script>
+</body>
+</html>
